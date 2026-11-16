@@ -10,6 +10,7 @@ import sys
 import json
 import shutil
 import zipfile
+import re
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(ROOT_DIR, 'src')
@@ -19,8 +20,23 @@ FIREFOX_DIST = os.path.join(DIST_DIR, 'firefox')
 RELEASES_DIR = os.path.join(DIST_DIR, 'releases')
 EXTENSIONS_DIR = os.path.join(ROOT_DIR, 'extensions')
 
+MATCH_PATTERN_RE = re.compile(r'^(\*|https?|file|ftp)://(\*|\*\.[^/*]+|[^/*]+)(/.*)$')
+
 def log(msg):
     print(f"[build] {msg}")
+
+def validate_match_pattern(pattern, context):
+    if pattern == '<all_urls>':
+        return
+    m = MATCH_PATTERN_RE.match(pattern)
+    if not m:
+        raise ValueError(f"Malformed match pattern in {context}: '{pattern}'")
+    _, host, _ = m.groups()
+    if '*' in host and host != '*':
+        if not host.startswith('*.'):
+            raise ValueError(f"Invalid host wildcard in {context}: '{pattern}' (wildcard must be at start, e.g. '*.domain.com')")
+        if '*' in host[2:]:
+            raise ValueError(f"Invalid host wildcard in {context}: '{pattern}' (multiple or trailing wildcards not allowed)")
 
 def validate_source():
     manifest_path = os.path.join(SRC_DIR, 'manifest.json')
@@ -31,6 +47,10 @@ def validate_source():
         manifest = json.load(f)
 
     log(f"Validating manifest: {manifest.get('name')} v{manifest.get('version')}")
+
+    # Validate all host permissions match patterns
+    for p in manifest.get('host_permissions', []):
+        validate_match_pattern(p, 'host_permissions')
 
     # Check extension and provider icons
     for size, rel_path in manifest.get('icons', {}).items():
@@ -50,8 +70,10 @@ def validate_source():
         if not os.path.exists(full_path):
             raise FileNotFoundError(f"Background worker missing: {full_path}")
 
-    # Check content scripts
-    for cs in manifest.get('content_scripts', []):
+    # Check content scripts and match patterns
+    for cs_idx, cs in enumerate(manifest.get('content_scripts', [])):
+        for m_idx, pattern in enumerate(cs.get('matches', [])):
+            validate_match_pattern(pattern, f"content_scripts[{cs_idx}].matches[{m_idx}]")
         for js_file in cs.get('js', []):
             full_path = os.path.join(SRC_DIR, js_file)
             if not os.path.exists(full_path):
@@ -60,6 +82,11 @@ def validate_source():
             full_path = os.path.join(SRC_DIR, css_file)
             if not os.path.exists(full_path):
                 raise FileNotFoundError(f"Content stylesheet missing: {full_path}")
+
+    # Check web_accessible_resources match patterns
+    for war_idx, war in enumerate(manifest.get('web_accessible_resources', [])):
+        for m_idx, pattern in enumerate(war.get('matches', [])):
+            validate_match_pattern(pattern, f"web_accessible_resources[{war_idx}].matches[{m_idx}]")
 
     # Check popup and options
     popup_path = manifest.get('action', {}).get('default_popup')
@@ -74,7 +101,7 @@ def validate_source():
         if not os.path.exists(full_path):
             raise FileNotFoundError(f"Options page missing: {full_path}")
 
-    log("Validation successful! All referenced assets and scripts exist.")
+    log("Validation successful! All referenced assets, scripts, and match patterns are valid.")
     return manifest
 
 def build_chromium(manifest):
