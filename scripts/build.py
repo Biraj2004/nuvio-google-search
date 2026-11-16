@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Build and packaging script for Nuvio for Google Search extension.
-Validates assets, generates Chromium and Firefox distributions, and builds zip archives.
+Validates assets, generates Chromium and Firefox distributions, and builds
+release-ready zip archives inside the 'extensions/' directory with internal subfolders.
 """
 
 import os
@@ -16,6 +17,7 @@ DIST_DIR = os.path.join(ROOT_DIR, 'dist')
 CHROMIUM_DIST = os.path.join(DIST_DIR, 'chromium')
 FIREFOX_DIST = os.path.join(DIST_DIR, 'firefox')
 RELEASES_DIR = os.path.join(DIST_DIR, 'releases')
+EXTENSIONS_DIR = os.path.join(ROOT_DIR, 'extensions')
 
 def log(msg):
     print(f"[build] {msg}")
@@ -105,15 +107,19 @@ def build_firefox(manifest):
 
     log(f"Firefox dist ready at {FIREFOX_DIST}")
 
-def create_zip(source_dir, output_zip):
+def create_zip(source_dir, output_zip, subfolder_name=None):
     os.makedirs(os.path.dirname(output_zip), exist_ok=True)
     with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
         for root, _, files in os.walk(source_dir):
             for file in files:
                 file_path = os.path.join(root, file)
-                arcname = os.path.relpath(file_path, source_dir)
+                rel_path = os.path.relpath(file_path, source_dir)
+                # Store inside a dedicated subfolder so extracting produces a clean self-contained directory
+                arcname = os.path.join(subfolder_name, rel_path) if subfolder_name else rel_path
+                # Normalize slashes for zip compatibility across operating systems
+                arcname = arcname.replace('\\', '/')
                 zipf.write(file_path, arcname)
-    log(f"Created archive: {output_zip} ({os.path.getsize(output_zip)} bytes)")
+    log(f"Created release archive: {output_zip} ({os.path.getsize(output_zip)} bytes)")
 
 def main():
     log("Starting build process...")
@@ -121,17 +127,33 @@ def main():
 
     os.makedirs(DIST_DIR, exist_ok=True)
     os.makedirs(RELEASES_DIR, exist_ok=True)
+    os.makedirs(EXTENSIONS_DIR, exist_ok=True)
 
     build_chromium(manifest)
     build_firefox(manifest)
 
     version = manifest.get('version', '1.0.0')
-    chrome_zip = os.path.join(RELEASES_DIR, f"nuvio-google-search-chromium-v{version}.zip")
-    firefox_zip = os.path.join(RELEASES_DIR, f"nuvio-google-search-firefox-v{version}.zip")
 
-    create_zip(CHROMIUM_DIST, chrome_zip)
-    create_zip(FIREFOX_DIST, firefox_zip)
+    # Subfolder names inside zip archives
+    chrome_subfolder = f"nuvio-google-search-chromium-v{version}"
+    firefox_subfolder = f"nuvio-google-search-firefox-v{version}"
 
+    # Target zip names
+    chrome_zip_name = f"nuvio-google-search-chromium-v{version}.zip"
+    firefox_zip_name = f"nuvio-google-search-firefox-v{version}.zip"
+
+    # Save release archives inside extensions/ directory
+    ext_chrome_zip = os.path.join(EXTENSIONS_DIR, chrome_zip_name)
+    ext_firefox_zip = os.path.join(EXTENSIONS_DIR, firefox_zip_name)
+
+    create_zip(CHROMIUM_DIST, ext_chrome_zip, subfolder_name=chrome_subfolder)
+    create_zip(FIREFOX_DIST, ext_firefox_zip, subfolder_name=firefox_subfolder)
+
+    # Also sync copy to dist/releases
+    shutil.copy2(ext_chrome_zip, os.path.join(RELEASES_DIR, chrome_zip_name))
+    shutil.copy2(ext_firefox_zip, os.path.join(RELEASES_DIR, firefox_zip_name))
+
+    log(f"Release archives successfully updated in {EXTENSIONS_DIR}")
     log("Build completed successfully!")
 
 if __name__ == '__main__':

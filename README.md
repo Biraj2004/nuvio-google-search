@@ -125,7 +125,12 @@ When configured in **Ask Each Time** mode (the default), clicking Watch displays
 
 ## Quick Start & Installation
 
-### Option A: Load Unpacked from Source
+### Option A: Install from Pre-Built Packages
+Ready-to-use release archives with self-contained directory structures are located in [`extensions/`](extensions/):
+- **Chromium (Chrome, Brave, Edge, Opera, Vivaldi)**: Extract [`extensions/nuvio-google-search-chromium-v1.0.0.zip`](extensions/nuvio-google-search-chromium-v1.0.0.zip), open `chrome://extensions/`, enable **Developer mode**, click **Load unpacked**, and select the extracted folder.
+- **Mozilla Firefox**: Extract [`extensions/nuvio-google-search-firefox-v1.0.0.zip`](extensions/nuvio-google-search-firefox-v1.0.0.zip), open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on...**, and select `manifest.json`.
+
+### Option B: Build from Source
 
 1. Clone or download this repository:
    ```bash
@@ -136,9 +141,7 @@ When configured in **Ask Each Time** mode (the default), clicking Watch displays
    ```bash
    python scripts/build.py
    ```
-3. Load into your browser:
-   - **Chrome, Brave, Edge, Opera**: Open `chrome://extensions/`, enable **Developer mode**, click **Load unpacked**, and select the `dist/chromium` folder (or `src/`).
-   - **Firefox**: Open `about:debugging#/runtime/this-firefox`, click **Load Temporary Add-on...**, and select `dist/firefox/manifest.json`.
+3. Load the generated distributions from `dist/chromium/` or `dist/firefox/`.
 
 Detailed browser-by-browser instructions are documented in the [Installation Guide](guide/installation.md).
 
@@ -185,6 +188,10 @@ nuvio-google-search/
 ├── AGENTS.md                       # Developer & AI Agent instructions
 ├── LICENSE                         # MIT License
 ├── README.md                       # Main project documentation
+├── extensions/                     # Pre-packaged release archives
+│   ├── README.md                   # Packaging reference
+│   ├── nuvio-google-search-chromium-v1.0.0.zip
+│   └── nuvio-google-search-firefox-v1.0.0.zip
 ├── guide/                          # Technical guides and specifications
 │   ├── architecture.md
 │   ├── configuration.md

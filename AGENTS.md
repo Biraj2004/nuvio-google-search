@@ -23,6 +23,10 @@ nuvio-google-search/
 ├── AGENTS.md                       # Agent & developer instructions (this file)
 ├── LICENSE                         # MIT License
 ├── README.md                       # Root open-source documentation
+├── extensions/                     # Pre-packaged release archives
+│   ├── README.md                   # Archive manifest and instructions
+│   ├── nuvio-google-search-chromium-v1.0.0.zip
+│   └── nuvio-google-search-firefox-v1.0.0.zip
 ├── guide/                          # Comprehensive technical guides
 │   ├── architecture.md             # System design and component data flow
 │   ├── configuration.md            # Storage schema and option keys
@@ -96,7 +100,7 @@ python scripts/build.py
 The script:
 1. Validates that every file declared in `manifest.json` exists on disk.
 2. Generates `dist/chromium/` and `dist/firefox/`.
-3. Compiles production zip archives in `dist/releases/`.
+3. Compiles production release zip archives in `extensions/` (and mirrors them in `dist/releases/`), ensuring all files are stored inside a versioned top-level subfolder for clean extraction.
 
 ## Conventional Commit Standards
 

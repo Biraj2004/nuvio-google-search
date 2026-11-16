@@ -1,5 +1,15 @@
 # Installation and Developer Sideloading Guide
 
+## Pre-Built Release Archives
+
+If you prefer not to build from source, pre-compiled release packages are provided directly in the [`extensions/`](../extensions/) directory:
+- `nuvio-google-search-chromium-v1.0.0.zip` (for Chrome, Brave, Edge, Opera, Vivaldi)
+- `nuvio-google-search-firefox-v1.0.0.zip` (for Mozilla Firefox)
+
+Each archive contains an internal release directory (e.g. `nuvio-google-search-chromium-v1.0.0/`) with all extension files ready to extract and load.
+
+---
+
 ## Quick Start from Source
 
 ### Prerequisites
