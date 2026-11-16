@@ -1,0 +1,22 @@
+# Dependencies and builds
+node_modules/
+dist/
+dist/*.zip
+dist/releases/
+
+# OS and Editor artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs and scratch
+*.log
+scratch/
