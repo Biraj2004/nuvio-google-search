@@ -27,10 +27,7 @@
     autoSearchWeb: true,
 
     // User opted to remember decision
-    rememberChoice: false,
-
-    // When cancelled, prompt to open web instead
-    webPromptOnCancel: true
+    rememberChoice: false
   };
 
   const NuvioStorage = {

@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const inputWebUrl = document.getElementById('input-web-url');
   const inputTimeout = document.getElementById('input-timeout');
   const cbFabFallback = document.getElementById('cb-fab-fallback');
-  const cbWebPromptCancel = document.getElementById('cb-web-prompt-cancel');
   const cbAutoSearch = document.getElementById('cb-auto-search');
   const btnSave = document.getElementById('btn-save');
   const btnReset = document.getElementById('btn-reset-all');
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (inputWebUrl) inputWebUrl.value = settings.webBaseUrl || 'https://nuvio-web.vercel.app/';
     if (inputTimeout) inputTimeout.value = settings.timeoutMs || 1500;
     if (cbFabFallback) cbFabFallback.checked = settings.enableFabFallback !== false;
-    if (cbWebPromptCancel) cbWebPromptCancel.checked = settings.webPromptOnCancel !== false;
     if (cbAutoSearch) cbAutoSearch.checked = settings.autoSearchWeb !== false;
   }
 
@@ -68,7 +66,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         webBaseUrl: webUrl,
         timeoutMs: timeout,
         enableFabFallback: cbFabFallback.checked,
-        webPromptOnCancel: cbWebPromptCancel.checked,
         autoSearchWeb: cbAutoSearch.checked
       };
 

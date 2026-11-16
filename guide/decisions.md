@@ -37,7 +37,8 @@ This document records the architectural and design decisions made for the Nuvio 
   - Clear title and media metadata card.
   - Checkbox: "Always allow google.com to open links in Nuvio Desktop".
   - Dedicated buttons for "Open Nuvio App", "Open in Web", and "Cancel".
-  - If cancelled, keep the default to ask each time and display a non-intrusive toast offering to open in web.
+  - If cancelled, keep the default to ask each time and cleanly close the dialog without intrusive notifications.
+  - While open, locks background scrolling to maintain focus and prevent background disalignment.
 - **Consequences**: Gives the user full authority over app launches, prevents unintentional app triggers, and matches expected browser security dialog behavior.
 
 ---

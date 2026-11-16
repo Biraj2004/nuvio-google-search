@@ -83,7 +83,8 @@ The Nuvio for Google Search extension integrates Nuvio streaming access into Goo
 - Emulates native browser permission prompts ("Open in Nuvio Desktop App?").
 - Includes an "Always allow google.com to open links in Nuvio Desktop" checkbox.
 - Offers distinct actions: Open Nuvio App, Open in Web, and Cancel.
-- If cancelled, remembers user preference to prompt each time and offers a subtle toast to open in web.
+- Locks background scrolling while open, and cleanly restores scrolling upon closure.
+- If cancelled, remembers user preference to prompt each time without intrusive notifications.
 
 ### 4. Companion Content Script (`src/content/nuvio-web.js`)
 - Activates on `https://nuvio-web.vercel.app/*`.

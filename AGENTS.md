@@ -76,7 +76,7 @@ nuvio-google-search/
 When a user clicks "Watch on Nuvio":
 1. **Metadata Resolution**: Scrapes title, release year, media type (`movie` vs `series`), and IMDb ID (`tt\d+`).
 2. **Mode Check**:
-   - `ask`: Displays the in-page permission dialog. If user confirms with "Always allow", updates storage to `smart`. If cancelled, remains in `ask` mode and shows a toast offering to open in web.
+   - `ask`: Displays the in-page permission dialog (with background scrolling locked). If user confirms with "Always allow", updates storage to `smart`. If cancelled, closes the dialog cleanly and remains in `ask` mode.
    - `smart`: Triggers `nuvio://` via hidden iframe or anchor, and starts a 1500ms timer. If window loses focus (`blur`) or page hides, app launch succeeded. If timer elapses without blur, auto-opens `https://nuvio-web.vercel.app/`.
    - `web`: Directly opens web URL in a new tab.
    - `desktop`: Directly triggers `nuvio://` protocol.

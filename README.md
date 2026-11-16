@@ -105,7 +105,7 @@ When configured in **Ask Each Time** mode (the default), clicking Watch displays
 - **Choice Options**:
   - **Open Nuvio App**: Triggers protocol launch with fallback verification.
   - **Open in Web**: Immediately opens Nuvio Web in a new tab.
-  - **Cancel**: Closes dialog, preserves prompt-each-time behavior, and provides a subtle toast to open in web.
+  - **Cancel**: Closes dialog cleanly and preserves prompt-each-time behavior.
 - **Remember Choice**: Checking *"Always allow google.com to open links in Nuvio Desktop"* saves the preference to bypass subsequent prompts. Settings can be reset at any time via the extension popup or options page.
 
 ---
@@ -158,7 +158,6 @@ The extension includes a toolbar popup and a dedicated Options page:
 | **Nuvio Web Base URL** | `https://nuvio-web.vercel.app/` | Destination URL for the web fallback client. |
 | **Detection Timeout** | `1500 ms` | Duration to await desktop protocol confirmation before triggering web fallback. |
 | **Floating Action Pill** | `true` | Fallback button when Google omits the streaming provider list. |
-| **Web Suggestion on Cancel** | `true` | Shows toast offering web launch if app launch is cancelled in the modal. |
 | **Auto-Search Web** | `true` | Pre-populates and triggers search when opening Nuvio Web. |
 
 Full configuration reference available in the [Configuration Guide](guide/configuration.md).

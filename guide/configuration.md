@@ -12,7 +12,6 @@ All user preferences are persisted using the browser's synchronized storage API 
 | `timeoutMs` | `number` | `1500` | Milliseconds to wait before declaring desktop app missing. |
 | `enableFabFallback` | `boolean` | `true` | Render floating action button if Google omits provider panel. |
 | `rememberChoice` | `boolean` | `false` | Indicates if the user checked "Always allow". |
-| `webPromptOnCancel` | `boolean` | `true` | Shows toast offering web launch if app launch is cancelled. |
 | `autoSearchWeb` | `boolean` | `true` | Injects companion script to trigger search on Nuvio Web. |
 
 ---
@@ -26,7 +25,7 @@ When clicking "Watch on Nuvio" in Google Search, the extension displays a native
 - Actions:
   - **Open Nuvio App**: Initiates desktop protocol launch with smart fallback. If "Always allow" was checked, persists `launchMode: 'smart'`.
   - **Open in Web**: Immediately opens `nuvio-web.vercel.app` in a new tab. If "Always allow" was checked, persists `launchMode: 'web'`.
-  - **Cancel**: Closes dialog, maintains `'ask'` mode for subsequent searches, and presents a non-intrusive toast offering to open in web.
+  - **Cancel**: Closes dialog cleanly and maintains `'ask'` mode for subsequent searches.
 
 ### 2. `smart`
 Directly triggers the desktop application (`nuvio://`). Simultaneously runs a protocol detection timer:

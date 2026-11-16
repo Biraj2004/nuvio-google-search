@@ -148,15 +148,7 @@
       timer = setTimeout(() => {
         cleanup();
         if (!appLaunched && !document.hidden) {
-          // Desktop application was not detected or cancelled
-          if (global.NuvioUI) {
-            global.NuvioUI.showToast(
-              'Nuvio Desktop app not detected. Opening in Nuvio Web...',
-              null,
-              null,
-              3000
-            );
-          }
+          // Desktop application was not detected or cancelled, open web fallback
           this.openInNewTab(webFallbackUrl);
           if (typeof onResult === 'function') {
             onResult('fallback');
@@ -209,16 +201,7 @@
               }
               this.openInNewTab(webUrl);
             } else {
-              // User cancelled app launch
-              // Keep preference as 'ask' each time, and provide subtle web prompt
-              if (settings.webPromptOnCancel && global.NuvioUI) {
-                global.NuvioUI.showToast(
-                  'App launch cancelled.',
-                  'Open in Web',
-                  () => this.openInNewTab(webUrl),
-                  5000
-                );
-              }
+              // User cancelled dialog: close modal cleanly without bottom notifications
             }
           }
         );

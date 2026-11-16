@@ -1,16 +1,18 @@
 /**
- * Native-style in-page prompt and toast notifications for Nuvio.
- * Styled without emojis, clean typography, dark/light theme aware.
+ * Native-style in-page prompt modal for Nuvio.
+ * Styled without emojis, clean typography, dark/light theme aware,
+ * with background scroll lock while open.
  */
 (function (global) {
   'use strict';
 
   const MODAL_ID = 'nuvio-launch-modal-container';
-  const TOAST_ID = 'nuvio-toast-container';
+  const SCROLL_LOCK_CLASS = 'nuvio-modal-open';
 
   const NuvioUI = {
     /**
      * Show modal asking user whether to open in desktop app or web.
+     * Locks background scrolling while displayed.
      *
      * @param {Object} media - { title, year, contentType, imdbId }
      * @param {Object} options - { protocolUri, webUrl, currentSettings }
@@ -71,7 +73,28 @@
         </div>
       `;
 
+      // Lock background scrolling on html and body
+      if (document.documentElement) {
+        document.documentElement.classList.add(SCROLL_LOCK_CLASS);
+      }
+      if (document.body) {
+        document.body.classList.add(SCROLL_LOCK_CLASS);
+      }
+
       document.body.appendChild(container);
+
+      // Prevent mouse wheel and touch scrolling on background through backdrop
+      const preventScroll = (e) => {
+        const dialog = container.querySelector('.nuvio-modal-dialog');
+        if (dialog && dialog.contains(e.target)) {
+          if (dialog.scrollHeight > dialog.clientHeight) {
+            return;
+          }
+        }
+        e.preventDefault();
+      };
+      container.addEventListener('wheel', preventScroll, { passive: false });
+      container.addEventListener('touchmove', preventScroll, { passive: false });
 
       // Event Listeners
       const closeBtn = container.querySelector('.nuvio-modal-close-btn');
@@ -80,7 +103,10 @@
       const appBtn = container.querySelector('#nuvio-btn-app');
       const alwaysAllowCb = container.querySelector('#nuvio-always-allow-cb');
 
+      let cleanedUp = false;
       const handleClose = (action) => {
+        if (cleanedUp) return;
+        cleanedUp = true;
         const remember = alwaysAllowCb ? alwaysAllowCb.checked : false;
         this.closeModal();
         if (typeof onConfirm === 'function') {
@@ -93,14 +119,14 @@
       webBtn.addEventListener('click', () => handleClose('web'));
       appBtn.addEventListener('click', () => handleClose('app'));
 
-      // Backdrop click
+      // Backdrop click closes dialog
       container.addEventListener('click', (e) => {
         if (e.target === container) {
           handleClose('cancel');
         }
       });
 
-      // Escape key
+      // Escape key closes dialog
       const keyHandler = (e) => {
         if (e.key === 'Escape') {
           document.removeEventListener('keydown', keyHandler);
@@ -109,75 +135,23 @@
       };
       document.addEventListener('keydown', keyHandler);
 
-      // Focus primary button
+      // Focus primary action button
       setTimeout(() => {
         if (appBtn) appBtn.focus();
       }, 50);
     },
 
     /**
-     * Close modal if open.
+     * Close modal if open and restore background scrolling.
      */
     closeModal() {
+      if (document.documentElement) {
+        document.documentElement.classList.remove(SCROLL_LOCK_CLASS);
+      }
+      if (document.body) {
+        document.body.classList.remove(SCROLL_LOCK_CLASS);
+      }
       const existing = document.getElementById(MODAL_ID);
-      if (existing) {
-        existing.remove();
-      }
-    },
-
-    /**
-     * Display a non-intrusive toast notification.
-     */
-    showToast(message, actionLabel = null, onAction = null, duration = 4000) {
-      this.closeToast();
-
-      const toast = document.createElement('div');
-      toast.id = TOAST_ID;
-      toast.className = 'nuvio-toast';
-
-      const logoUrl = global.nuvioBrowser.runtime.getURL('icons/nuvio-provider-16.png');
-
-      let actionHtml = '';
-      if (actionLabel) {
-        actionHtml = `<button type="button" class="nuvio-toast-action">${this.escapeHtml(actionLabel)}</button>`;
-      }
-
-      toast.innerHTML = `
-        <img src="${logoUrl}" alt="Nuvio" class="nuvio-toast-icon" />
-        <span class="nuvio-toast-msg">${this.escapeHtml(message)}</span>
-        ${actionHtml}
-        <button type="button" class="nuvio-toast-close" aria-label="Close notification">&times;</button>
-      `;
-
-      document.body.appendChild(toast);
-
-      if (actionLabel && onAction) {
-        const actionBtn = toast.querySelector('.nuvio-toast-action');
-        if (actionBtn) {
-          actionBtn.addEventListener('click', () => {
-            this.closeToast();
-            onAction();
-          });
-        }
-      }
-
-      const closeBtn = toast.querySelector('.nuvio-toast-close');
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => this.closeToast());
-      }
-
-      if (duration > 0) {
-        setTimeout(() => {
-          this.closeToast();
-        }, duration);
-      }
-    },
-
-    /**
-     * Close toast notification.
-     */
-    closeToast() {
-      const existing = document.getElementById(TOAST_ID);
       if (existing) {
         existing.remove();
       }

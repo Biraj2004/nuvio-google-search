@@ -47,6 +47,7 @@ The Nuvio for Google Search interface adheres to strict design standards:
 
 ### 3. Permission Modal Dialog
 - **Backdrop**: Full viewport overlay with `rgba(13, 16, 30, 0.7)` and `backdrop-filter: blur(5px)`.
+- **Background Scroll Lock**: Automatically sets `overflow: hidden !important` and `overscroll-behavior: contain !important` on `<html>` and `<body>` via `.nuvio-modal-open` while the dialog is active, cleanly restoring original page scrolling when closed.
 - **Dialog Box**: 460px maximum width, 12px border radius, subtle violet drop shadow.
 - **Header**:
   - 38x38px Nuvio logo.
@@ -67,8 +68,3 @@ The Nuvio for Google Search interface adheres to strict design standards:
 - **Location**: Fixed bottom-right of viewport (`bottom: 24px`, `right: 24px`), z-index `9999`.
 - **Styling**: `#0d101e` solid background with 1px `rgba(182, 77, 245, 0.35)` border.
 - **Behavior**: Auto-hides on scroll-down, restores on scroll-up. Click triggers watch action.
-
-### 5. Toast Notifications
-- **Location**: Bottom center of viewport (`bottom: 24px`), horizontal slide-up animation.
-- **Color**: Dark elevated surface (`#0d101e`), white text, border in violet `rgba(182, 77, 245, 0.35)`, action button in accent violet.
-- **Auto-dismiss**: 3 to 5 seconds depending on whether an action button is present.

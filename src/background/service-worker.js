@@ -27,8 +27,7 @@ if (api && api.runtime) {
         timeoutMs: 1500,
         enableFabFallback: true,
         autoSearchWeb: true,
-        rememberChoice: false,
-        webPromptOnCancel: true
+        rememberChoice: false
       };
 
       if (api.storage && api.storage.sync) {
