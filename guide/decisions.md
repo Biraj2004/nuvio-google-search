@@ -64,3 +64,12 @@ This document records the architectural and design decisions made for the Nuvio 
 - **Context**: Modern extension security requires avoiding bloated dependency chains and untrusted third-party npm bundles.
 - **Decision**: Build the entire extension using native modern JavaScript (ES6+), standard WebExtension APIs, and pure CSS.
 - **Consequences**: Zero build friction, instant loading speed, minimal memory footprint, and streamlined review compliance for Chrome Web Store and Firefox Add-ons.
+
+---
+
+### ADR-007: Zero Background Service Worker Architecture
+
+- **Status**: Accepted
+- **Context**: Content-script-driven extensions that only inject elements into web pages and open destination URLs upon user click gestures do not require a persistent or event-driven background service worker in Manifest V3. Extensions like Stremio Google Search operate purely as content script extensions.
+- **Decision**: Remove the background service worker entirely. Rely directly on DOM content script execution, direct user gesture tab opening (`window.open`), and direct `chrome.storage.sync` access from content and UI panels.
+- **Consequences**: Zero idle memory overhead, zero service worker wakeups, no "Inspect views: service worker (Inactive)" badge in `chrome://extensions`, and maximum responsiveness.

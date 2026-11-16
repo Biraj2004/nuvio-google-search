@@ -16,8 +16,6 @@ Each archive is packaged with a top-level release directory to ensure clean extr
 nuvio-google-search-chromium-v1.0.0.zip
 └── nuvio-google-search-chromium-v1.0.0/
     ├── manifest.json
-    ├── background/
-    │   └── service-worker.js
     ├── content/
     │   ├── google.js
     │   ├── google.css

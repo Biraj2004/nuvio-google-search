@@ -37,8 +37,6 @@ nuvio-google-search/
 │   └── installation.md             # Sideloading and developer installation
 ├── src/                            # Extension source files (Manifest V3)
 │   ├── manifest.json               # Root extension manifest
-│   ├── background/
-│   │   └── service-worker.js       # Background service worker
 │   ├── content/
 │   │   ├── google.js               # Google SERP content script
 │   │   ├── google.css              # Styles for injected cards and buttons

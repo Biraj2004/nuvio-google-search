@@ -22,13 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Open Web Client button
   if (btnOpenWeb) {
     btnOpenWeb.addEventListener('click', () => {
-      if (window.nuvioBrowser && window.nuvioBrowser.runtime) {
-        window.nuvioBrowser.runtime.sendMessage({ action: 'openTab', url: webUrl }).catch(() => {
-          window.open(webUrl, '_blank', 'noopener,noreferrer');
-        });
-      } else {
-        window.open(webUrl, '_blank', 'noopener,noreferrer');
-      }
+      window.open(webUrl, '_blank', 'noopener,noreferrer');
     });
   }
 

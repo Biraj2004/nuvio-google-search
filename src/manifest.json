@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Nuvio for Google Search",
   "version": "1.0.0",
-  "description": "Adds Nuvio to the watch movie/series provider options in Google Search with desktop app launching and web fallback.",
+  "description": "Adds Nuvio to the watch movie/series button in Google Search for direct web streaming.",
   "author": "Nuvio Community",
   "homepage_url": "https://nuvio-web.vercel.app/",
   "icons": {
@@ -25,9 +25,6 @@
   "options_ui": {
     "page": "options/options.html",
     "open_in_tab": false
-  },
-  "background": {
-    "service_worker": "background/service-worker.js"
   },
   "permissions": [
     "storage"

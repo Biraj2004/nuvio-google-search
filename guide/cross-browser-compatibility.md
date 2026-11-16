@@ -15,28 +15,13 @@ The extension is architected to run across all major modern browser engines:
 
 ## Key Platform Differences & Handling
 
-### 1. Background Execution
-- **Chromium (Chrome, Brave, Edge, Opera)**:
-  Uses a Background Service Worker:
-  ```json
-  "background": {
-    "service_worker": "background/service-worker.js"
-  }
-  ```
-- **Gecko (Mozilla Firefox)**:
-  Firefox Manifest V3 requires `background.scripts` array and mandatory extension ID in `browser_specific_settings`:
-  ```json
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "nuvio-google-search@nuvio.tv",
-      "strict_min_version": "109.0"
-    }
-  },
-  "background": {
-    "scripts": ["background/service-worker.js"]
-  }
-  ```
-  The build script `scripts/build.py` automatically generates both distributions.
+### 1. Pure Zero-Overhead Content Script Architecture
+- **Unified Across All Engines (Chromium & Firefox)**:
+  Nuvio requires zero background service workers or background scripts.
+  - No background memory overhead or idle wakeups.
+  - Direct web launch triggered natively by user click gestures (`window.open`).
+  - Direct storage access via standard WebExtension `storage.sync` APIs.
+  - Firefox distribution only requires adding `browser_specific_settings.gecko.id` to `manifest.json`, which `scripts/build.py` handles automatically.
 
 ### 2. API Namespace (`chrome.*` vs `browser.*`)
 To ensure zero dependency on external node modules while remaining 100% compliant:

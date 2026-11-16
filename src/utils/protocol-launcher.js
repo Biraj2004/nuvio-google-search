@@ -37,12 +37,10 @@
      * @param {string} url
      */
     openInNewTab(url) {
-      if (global.nuvioBrowser && global.nuvioBrowser.runtime) {
-        global.nuvioBrowser.runtime.sendMessage({ action: 'openTab', url: url }).catch(() => {
-          window.open(url, '_blank', 'noopener,noreferrer');
-        });
-      } else {
+      if (typeof window !== 'undefined' && window.open) {
         window.open(url, '_blank', 'noopener,noreferrer');
+      } else if (global.open) {
+        global.open(url, '_blank', 'noopener,noreferrer');
       }
     },
 

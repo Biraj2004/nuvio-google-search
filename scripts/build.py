@@ -129,11 +129,6 @@ def build_firefox(manifest):
         }
     }
 
-    # In Firefox MV3 background, scripts array is standard
-    ff_manifest['background'] = {
-        'scripts': ['background/service-worker.js']
-    }
-
     with open(ff_manifest_path, 'w', encoding='utf-8') as f:
         json.dump(ff_manifest, f, indent=2)
 

@@ -171,7 +171,6 @@ nuvio-google-search/
 │   └── installation.md
 ├── src/                            # Manifest V3 extension source
 │   ├── manifest.json
-│   ├── background/service-worker.js
 │   ├── content/google.js
 │   ├── content/google.css
 │   ├── content/nuvio-web.js

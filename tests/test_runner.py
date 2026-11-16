@@ -186,6 +186,10 @@ class TestRunner:
         modal_referenced = any('modal.js' in js for cs in manifest.get('content_scripts', []) for js in cs.get('js', []))
         self.log(not modal_referenced, "Modal script is not referenced in manifest (no popups)")
 
+        # Verify background service worker is omitted (pure zero-overhead extension like Stremio)
+        has_background = 'background' in manifest
+        self.log(not has_background, "Background service worker is omitted (zero idle background processes)")
+
     # --------------------------------------------------------------------------
     # 2. Icon Suite Dimensions & Channels
     # --------------------------------------------------------------------------
@@ -267,17 +271,9 @@ class TestRunner:
           self: null,
           URLSearchParams: URLSearchParams,
           encodeURIComponent: encodeURIComponent,
+          open: (url) => { openedUrl = url; },
           NuvioStorage: {
             getSettings: async () => ({ webBaseUrl: 'https://nuvio-web.vercel.app/' })
-          },
-          nuvioBrowser: {
-            runtime: {
-              sendMessage: async (msg) => {
-                if (msg.action === 'openTab') {
-                  openedUrl = msg.url;
-                }
-              }
-            }
           }
         };
         winLauncher.window = winLauncher;
@@ -354,7 +350,7 @@ class TestRunner:
 
                 has_manifest = f"{expected_subfolder}/manifest.json" in namelist
                 self.log(has_manifest, f"{arch_name} contains manifest.json at subfolder root")
-                self.log(len(namelist) == 25, f"{arch_name} contains exactly 25 packaged extension assets (actual: {len(namelist)})")
+                self.log(len(namelist) == 24, f"{arch_name} contains exactly 24 packaged extension assets (actual: {len(namelist)})")
 
     # --------------------------------------------------------------------------
     # 6. Zero-Emoji Compliance

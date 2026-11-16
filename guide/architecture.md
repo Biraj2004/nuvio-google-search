@@ -62,8 +62,8 @@ The Nuvio for Google Search extension integrates Nuvio streaming access into Goo
 
 ### 2. Direct Web Launcher (`src/utils/protocol-launcher.js`)
 - Formats destination search URL: `https://nuvio-web.vercel.app/search?q={query}&imdb={imdbId}&type={contentType}`.
-- Immediately dispatches `openTab` message to the background service worker or calls `window.open` to launch the title directly in a new tab.
-- Operates with zero desktop application checks and zero in-page prompt dialogs.
+- Immediately calls `window.open` to launch the title directly in a new tab upon user click.
+- Operates with zero desktop application checks, zero in-page prompt dialogs, and zero background thread overhead.
 
 ### 3. Companion Content Script (`src/content/nuvio-web.js`)
 - Activates on `https://nuvio-web.vercel.app/*`.
@@ -72,16 +72,12 @@ The Nuvio for Google Search extension integrates Nuvio streaming access into Goo
 
 ### 4. Storage & Preference Layer (`src/utils/storage.js`)
 - Wraps `chrome.storage.sync` with automatic fallback to `chrome.storage.local`.
+- Directly accessible from content scripts, popup, and options page without requiring a background service worker.
 - Persists user preferences:
   - `webBaseUrl`: `https://nuvio-web.vercel.app/`.
   - `enableFabFallback`: `true`.
   - `autoSearchWeb`: `true`.
 
-### 5. Background Service Worker (`src/background/service-worker.js`)
-- Manifest V3 background coordinator.
-- Manages installation defaults.
-- Handles cross-origin tab opening requests via runtime message passing.
-
-### 6. User Interface Panels
+### 5. User Interface Panels
 - **Popup (`src/popup/`)**: Displays active extension status, current target URL, direct "Open Nuvio Web" button, and settings access.
 - **Options (`src/options/`)**: Custom web client endpoint override and search injection feature toggles.
