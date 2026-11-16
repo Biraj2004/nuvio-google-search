@@ -120,7 +120,7 @@
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
 
-    const iconUrl = window.nuvioBrowser.runtime.getURL('icons/icon-48.png');
+    const iconUrl = window.nuvioBrowser.runtime.getURL('icons/nuvio-provider-48.png');
 
     card.innerHTML = `
       <img src="${iconUrl}" alt="Nuvio" class="nuvio-provider-icon" />
@@ -163,7 +163,7 @@
     btn.setAttribute('tabindex', '0');
     btn.href = '#';
 
-    const iconUrl = window.nuvioBrowser.runtime.getURL('icons/icon-32.png');
+    const iconUrl = window.nuvioBrowser.runtime.getURL('icons/nuvio-provider-32.png');
 
     btn.innerHTML = `
       <img src="${iconUrl}" alt="Nuvio" class="nuvio-header-action-icon" />
@@ -198,7 +198,7 @@
     fab.setAttribute('role', 'button');
     fab.setAttribute('tabindex', '0');
 
-    const iconUrl = window.nuvioBrowser.runtime.getURL('icons/icon-32.png');
+    const iconUrl = window.nuvioBrowser.runtime.getURL('icons/nuvio-provider-32.png');
 
     fab.innerHTML = `
       <img src="${iconUrl}" alt="Nuvio" class="nuvio-fab-icon" />

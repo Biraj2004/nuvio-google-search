@@ -32,11 +32,16 @@ def validate_source():
 
     log(f"Validating manifest: {manifest.get('name')} v{manifest.get('version')}")
 
-    # Check icons
+    # Check extension and provider icons
     for size, rel_path in manifest.get('icons', {}).items():
         full_path = os.path.join(SRC_DIR, rel_path)
         if not os.path.exists(full_path):
             raise FileNotFoundError(f"Icon missing: {full_path}")
+
+    for p_size in [16, 32, 48, 128, 256]:
+        provider_icon_path = os.path.join(SRC_DIR, 'icons', f'nuvio-provider-{p_size}.png')
+        if not os.path.exists(provider_icon_path):
+            raise FileNotFoundError(f"Provider icon missing: {provider_icon_path}")
 
     # Check background script
     bg_worker = manifest.get('background', {}).get('service_worker')

@@ -23,7 +23,7 @@
       container.id = MODAL_ID;
       container.className = 'nuvio-modal-backdrop';
 
-      const logoUrl = global.nuvioBrowser.runtime.getURL('icons/icon-48.png');
+      const logoUrl = global.nuvioBrowser.runtime.getURL('icons/nuvio-provider-48.png');
       const formattedTitle = media.title || 'Selected Title';
       const metaInfo = [
         media.contentType ? media.contentType.toUpperCase() : 'MEDIA',
@@ -135,7 +135,7 @@
       toast.id = TOAST_ID;
       toast.className = 'nuvio-toast';
 
-      const logoUrl = global.nuvioBrowser.runtime.getURL('icons/icon-16.png');
+      const logoUrl = global.nuvioBrowser.runtime.getURL('icons/nuvio-provider-16.png');
 
       let actionHtml = '';
       if (actionLabel) {
