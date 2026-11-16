@@ -60,19 +60,24 @@ body[data-darkmode="true"] {
    Provider Card Injection (Inside "Where to Watch" list)
    -------------------------------------------------------------------------- */
 .nuvio-provider-card {
-  display: flex;
-  align-items: center;
-  margin: 6px 0;
-  padding: 8px 14px;
-  background: var(--nuvio-bg-surface);
-  border: 1px solid var(--nuvio-border);
-  border-radius: 8px;
-  box-sizing: border-box;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 52px !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 6px 0 !important;
+  padding: 8px 14px !important;
+  background: var(--nuvio-bg-surface) !important;
+  border: 1px solid var(--nuvio-border) !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
   text-decoration: none !important;
   color: var(--nuvio-text-primary) !important;
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
-  user-select: none;
+  cursor: pointer !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease !important;
+  user-select: none !important;
+  overflow: visible !important;
+  width: 100% !important;
 }
 
 .nuvio-provider-card:hover {
@@ -155,23 +160,29 @@ body[data-darkmode="true"] {
    Header Quick Action Pill Button (Next to Watchlist / Share)
    -------------------------------------------------------------------------- */
 .nuvio-header-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: 20px;
-  background: var(--nuvio-bg-surface-elevated);
-  border: 1px solid var(--nuvio-border);
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  padding: 0 14px !important;
+  border-radius: 18px !important;
+  background: var(--nuvio-bg-surface-elevated) !important;
+  border: 1px solid var(--nuvio-border) !important;
   color: var(--nuvio-text-primary) !important;
   text-decoration: none !important;
-  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-  margin-right: 8px;
-  margin-bottom: 6px;
+  font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  user-select: none !important;
+  margin-right: 8px !important;
+  margin-bottom: 6px !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  line-height: 34px !important;
 }
 
 .nuvio-header-action-btn:hover {

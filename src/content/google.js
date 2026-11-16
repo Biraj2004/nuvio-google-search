@@ -240,6 +240,36 @@
   }
 
   /**
+   * Find the legitimate watch provider list container in the Knowledge Panel.
+   * Ensures we only inject into genuine provider lists (div[role='list'] or containers
+   * holding provider item anchors), never into thin section headers, tabs, or empty dividers.
+   */
+  function findWatchProviderList() {
+    // 1. Direct role="list" within media_actions containers
+    const mediaActions = document.querySelector(`
+      div[data-attrid='kc:/tv/tv_program:media_actions_wholepage'],
+      div[data-attrid='kc:/film/film:media_actions_wholepage'],
+      div[data-attrid='kc:/broadcast/broadcast_program:media_actions_wholepage'],
+      div[data-attrid*='media_actions_wholepage']
+    `);
+
+    if (mediaActions) {
+      const roleList = mediaActions.querySelector("div[role='list']");
+      if (roleList) {
+        return roleList;
+      }
+
+      // Check if there are provider links / listitems already present
+      const firstProviderLink = mediaActions.querySelector("a[href], [role='listitem']");
+      if (firstProviderLink && firstProviderLink.parentElement && firstProviderLink.parentElement !== mediaActions) {
+        return firstProviderLink.parentElement;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * Main injection logic into Google SERP.
    */
   async function injectNuvio() {
@@ -256,48 +286,38 @@
 
     let injectedInPanel = false;
 
-    // Target 1: Watch Options / Media Actions Container
-    const watchContainers = document.querySelectorAll(`
-      div[data-attrid='kc:/tv/tv_program:media_actions_wholepage'],
-      div[data-attrid='kc:/film/film:media_actions_wholepage'],
-      div[data-attrid='kc:/broadcast/broadcast_program:media_actions_wholepage'],
-      div[data-attrid*='media_actions'],
-      div[data-attrid*='watch_actions'],
-      div[data-attrid='action:watch']
-    `);
+    // Target 1: Watch Options / Media Actions Provider List
+    const existingCard = document.getElementById(NUVIO_CARD_ID);
+    const providerList = findWatchProviderList();
 
-    if (watchContainers.length > 0) {
-      watchContainers.forEach((container) => {
-        if (container.querySelector(`#${NUVIO_CARD_ID}`)) {
-          injectedInPanel = true;
-          return;
-        }
-
-        // Try to find the list container inside media_actions
-        const listContainer = container.querySelector("div[role='list']") || container.firstElementChild || container;
+    if (providerList) {
+      if (!existingCard) {
         const card = createProviderCard(media);
-
-        if (listContainer) {
-          // Prepend as top recommended watch option or append cleanly
-          if (listContainer.firstChild) {
-            listContainer.insertBefore(card, listContainer.firstChild);
-          } else {
-            listContainer.appendChild(card);
-          }
-          injectedInPanel = true;
+        if (providerList.firstChild) {
+          providerList.insertBefore(card, providerList.firstChild);
+        } else {
+          providerList.appendChild(card);
         }
-      });
+      }
+      injectedInPanel = true;
+    } else if (existingCard) {
+      existingCard.remove();
     }
 
     // Target 2: Header action bar (alongside Watchlist / Share buttons)
     const actionRow = document.querySelector(
-      "div[data-attrid^='kc:/film/film:'] [role='group'], div[data-attrid^='kc:/tv/tv_program:'] [role='group'], div[data-attrid*='actions'] [role='group']"
+      "div[data-attrid^='kc:/film/film:'] [role='group'], div[data-attrid^='kc:/tv/tv_program:'] [role='group']"
     );
 
-    if (actionRow && !actionRow.querySelector(`#${NUVIO_HEADER_BTN_ID}`)) {
-      const headerBtn = createHeaderActionButton(media);
-      actionRow.insertBefore(headerBtn, actionRow.firstChild);
+    const existingHeaderBtn = document.getElementById(NUVIO_HEADER_BTN_ID);
+    if (actionRow) {
+      if (!existingHeaderBtn) {
+        const headerBtn = createHeaderActionButton(media);
+        actionRow.insertBefore(headerBtn, actionRow.firstChild);
+      }
       injectedInPanel = true;
+    } else if (existingHeaderBtn) {
+      existingHeaderBtn.remove();
     }
 
     // Target 3: Fallback Floating Pill
