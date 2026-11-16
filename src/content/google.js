@@ -203,52 +203,95 @@
   }
 
   /**
+   * Helper to verify if an element is part of the Knowledge Panel header action row.
+   * (Where Stremio, "Already watched", and "Want to watch" buttons reside).
+   */
+  function isHeaderActionElement(el) {
+    if (!el || !(el instanceof Element)) return false;
+    if (el.getAttribute('role') === 'group' || el.closest("[role='group']")) {
+      return true;
+    }
+    if (el.querySelector("[role='group']")) {
+      return true;
+    }
+    const text = (el.textContent || '').toLowerCase();
+    if (text.includes('already watched') || text.includes('want to watch') || text.includes('watchlist')) {
+      return true;
+    }
+    if (el.querySelector("a[href*='stremio'], [class*='stremio'], [id*='stremio']")) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Find the streaming providers list container in the Google Knowledge Panel.
    * Targets the genuine "Where to watch" provider section (earlier placement).
-   * Strictly avoids header action rows (Stremio / Already watched / Want to watch).
+   * Strictly isolates from the header action row (Stremio / Already watched / Want to watch).
    */
   function findWatchProviderContainer() {
-    const section = document.querySelector(`
+    // 1. Search for dedicated "Where to watch" wholepage containers
+    const sections = document.querySelectorAll(`
       div[data-attrid='kc:/tv/tv_program:media_actions_wholepage'],
       div[data-attrid='kc:/film/film:media_actions_wholepage'],
       div[data-attrid='kc:/broadcast/broadcast_program:media_actions_wholepage'],
-      div[data-attrid*='media_actions_wholepage'],
-      div[data-attrid*='media_actions']:not([data-attrid*='header'])
+      div[data-attrid*='media_actions_wholepage']
     `);
 
-    if (!section) {
-      return null;
+    for (const section of sections) {
+      if (isHeaderActionElement(section)) {
+        continue;
+      }
+
+      // Check for role="list" inside the section
+      const roleList = section.querySelector("div[role='list']");
+      if (roleList && !isHeaderActionElement(roleList)) {
+        return { el: roleList, method: 'prepend' };
+      }
+
+      // Check for carousel inside the section
+      const carousel = section.querySelector("g-scrolling-carousel");
+      if (carousel) {
+        const target = carousel.querySelector("div[role='list']") || carousel.firstElementChild || carousel;
+        if (!isHeaderActionElement(target)) {
+          return { el: target, method: 'prepend' };
+        }
+      }
+
+      // Check if there are other streaming provider links inside
+      const providerLinks = section.querySelectorAll("a[href]:not([role='button'])");
+      for (const link of providerLinks) {
+        const parent = link.parentElement;
+        if (parent && parent !== section && !isHeaderActionElement(parent)) {
+          return { el: parent, method: 'prepend' };
+        }
+      }
+
+      // If section has multiple child divs (Child 0 = "Where to watch" header, Child 1 = list)
+      if (section.children.length > 1 && !isHeaderActionElement(section.children[1])) {
+        return { el: section.children[1], method: 'prepend' };
+      }
+
+      return { el: section, method: 'append' };
     }
 
-    // 1. Direct role="list" within the section
-    const roleList = section.querySelector("div[role='list']");
-    if (roleList) {
-      return { el: roleList, method: 'prepend' };
-    }
-
-    // 2. Carousel container inside the section
-    const carousel = section.querySelector("g-scrolling-carousel");
-    if (carousel) {
-      const target = carousel.querySelector("div[role='list']") || carousel.firstElementChild || carousel;
-      return { el: target, method: 'prepend' };
-    }
-
-    // 3. Existing provider items/links inside the section (exclude buttons in action rows)
-    const providerLinks = section.querySelectorAll("a[href]:not([role='button'])");
-    for (const link of providerLinks) {
-      const parent = link.parentElement;
-      if (parent && parent !== section && !parent.getAttribute('data-attrid') && parent.getAttribute('role') !== 'group') {
-        return { el: parent, method: 'prepend' };
+    // 2. Search for explicit "Where to watch" heading
+    const headings = document.querySelectorAll("h2, h3, div[role='heading'], span");
+    for (const h of headings) {
+      const text = (h.textContent || '').trim().toLowerCase();
+      if (text === 'where to watch' || text === 'watch options' || text === 'ways to watch') {
+        const section = h.closest("div[data-attrid*='media_actions'], div[data-attrid*='action'], div.kp-blk, div.g");
+        if (section && !isHeaderActionElement(section)) {
+          const list = section.querySelector("div[role='list']") || (section.children.length > 1 ? section.children[1] : section);
+          if (!isHeaderActionElement(list)) {
+            return { el: list, method: 'prepend' };
+          }
+        }
       }
     }
 
-    // 4. If section has multiple child divs (Child 0 = "Where to watch" header, Child 1 = provider list)
-    if (section.children.length > 1) {
-      return { el: section.children[1], method: 'prepend' };
-    }
-
-    // 5. Append inside section directly (below header, never into firstElementChild)
-    return { el: section, method: 'append' };
+    // Never fallback to header action row!
+    return null;
   }
 
   /**
