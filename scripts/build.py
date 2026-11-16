@@ -141,16 +141,25 @@ def build_firefox(manifest):
 
 def create_zip(source_dir, output_zip, subfolder_name=None):
     os.makedirs(os.path.dirname(output_zip), exist_ok=True)
+    # Use fixed timestamp and permissions for reproducible deterministic archives
+    fixed_time = (2026, 1, 1, 0, 0, 0)
     with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for root, _, files in os.walk(source_dir):
-            for file in files:
+        for root, dirs, files in os.walk(source_dir):
+            dirs.sort()
+            for file in sorted(files):
                 file_path = os.path.join(root, file)
                 rel_path = os.path.relpath(file_path, source_dir)
                 # Store inside a dedicated subfolder so extracting produces a clean self-contained directory
                 arcname = os.path.join(subfolder_name, rel_path) if subfolder_name else rel_path
                 # Normalize slashes for zip compatibility across operating systems
                 arcname = arcname.replace('\\', '/')
-                zipf.write(file_path, arcname)
+                
+                with open(file_path, 'rb') as f:
+                    data = f.read()
+                zinfo = zipfile.ZipInfo(arcname, date_time=fixed_time)
+                zinfo.compress_type = zipfile.ZIP_DEFLATED
+                zinfo.external_attr = 0o644 << 16
+                zipf.writestr(zinfo, data)
     log(f"Created release archive: {output_zip} ({os.path.getsize(output_zip)} bytes)")
 
 def main():
