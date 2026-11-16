@@ -20,23 +20,13 @@ div[data-attrid="kc:/tv/tv_program:media_actions_wholepage"]
 div[data-attrid="kc:/broadcast/broadcast_program:media_actions_wholepage"]
 
 /* Generic Media Action Containers */
-div[data-attrid*="media_actions"]
-div[data-attrid*="watch_actions"]
-div[data-attrid="action:watch"]
+div[data-attrid*="media_actions_wholepage"]
 ```
 
-Inside these containers, Google typically provides a `div[role="list"]` or linear sequence of provider anchor tags (`<a ping="...">`). The extension prepends the Nuvio provider card to the top of this list.
+Inside these containers, Google renders a `div[role="list"]`, carousel, or linear sequence of provider items. The extension prepends the Nuvio provider card directly to the top of this list. It strictly isolates injection to this list, leaving the header button row (`[role="group"]` containing Stremio, "Already watched", and "Want to watch") completely untouched.
 
-### 2. Header Action Rows
-Quick-action buttons (such as "Want to watch", "Watched it", and "Share") are rendered inside:
-
-```css
-div[data-attrid^="kc:/film/film:"] [role="group"]
-div[data-attrid^="kc:/tv/tv_program:"] [role="group"]
-div[data-attrid*="actions"] [role="group"]
-```
-
-The extension injects a pill button (`Watch on Nuvio`) directly into this button group.
+### 2. Floating Action Fallback
+When a Knowledge Panel is present but Google does not offer a "Where to watch" provider list in the user's geographic region, the extension surfaces a subtle Floating Action Button (FAB) at the bottom-right of the viewport.
 
 ### 3. Entity Metadata Selectors
 

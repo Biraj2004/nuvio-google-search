@@ -55,9 +55,9 @@ The Nuvio for Google Search extension integrates Nuvio streaming access into Goo
 ### 1. Google Search Content Script (`src/content/google.js`)
 - **Metadata Extraction**: Scrapes the current page for entity identifiers including IMDb ID (`tt\d+`), entity title, media type (`movie` vs `series`), and release year.
 - **DOM Injection Engine**: Identifies appropriate insertion anchors in the Google Knowledge Graph:
-  - Streaming Providers Container (`div[data-attrid*="media_actions"]`).
-  - Action Header Row (next to Watchlist and Share controls).
+  - Streaming Providers Container (`div[data-attrid*="media_actions_wholepage"]`) as the primary target.
   - Floating Action Pill (FAB) as a fallback when no provider container is rendered by Google.
+  - Strictly avoids header action button rows (`[role="group"]`) to ensure no visual conflict with other extensions or native buttons.
 - **Mutation Observer**: Monitors `#rcnt` and `document.body` for dynamic single-page transitions in Google Search to reinject elements without duplicating or leaking memory.
 
 ### 2. Direct Web Launcher (`src/utils/protocol-launcher.js`)

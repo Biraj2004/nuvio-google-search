@@ -7,7 +7,6 @@
 
   const INJECTED_CLASS = 'nuvio-injected';
   const NUVIO_CARD_ID = 'nuvio-watch-provider-card';
-  const NUVIO_HEADER_BTN_ID = 'nuvio-header-action-btn';
   const NUVIO_FAB_ID = 'nuvio-floating-action-pill';
 
   let currentMedia = null;
@@ -153,42 +152,6 @@
   }
 
   /**
-   * Create the header action pill button (alongside Watchlist / Share).
-   */
-  function createHeaderActionButton(media) {
-    const btn = document.createElement('a');
-    btn.id = NUVIO_HEADER_BTN_ID;
-    btn.className = `nuvio-header-action-btn ${INJECTED_CLASS}`;
-    btn.setAttribute('role', 'button');
-    btn.setAttribute('tabindex', '0');
-    btn.href = '#';
-
-    const iconUrl = window.nuvioBrowser.runtime.getURL('icons/nuvio-provider-32.png');
-
-    btn.innerHTML = `
-      <img src="${iconUrl}" alt="Nuvio" class="nuvio-header-action-icon" />
-      <span>Watch on Nuvio</span>
-    `;
-
-    const handleAction = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (window.NuvioLauncher) {
-        window.NuvioLauncher.launch(media);
-      }
-    };
-
-    btn.addEventListener('click', handleAction);
-    btn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        handleAction(e);
-      }
-    });
-
-    return btn;
-  }
-
-  /**
    * Create the floating action pill (FAB) fallback.
    */
   function createFloatingActionPill(media) {
@@ -240,37 +203,58 @@
   }
 
   /**
-   * Find the legitimate watch provider list container in the Knowledge Panel.
-   * Ensures we only inject into genuine provider lists (div[role='list'] or containers
-   * holding provider item anchors), never into thin section headers, tabs, or empty dividers.
+   * Find the streaming providers list container in the Google Knowledge Panel.
+   * Targets the genuine "Where to watch" provider section (earlier placement).
+   * Strictly avoids header action rows (Stremio / Already watched / Want to watch).
    */
-  function findWatchProviderList() {
-    // 1. Direct role="list" within media_actions containers
-    const mediaActions = document.querySelector(`
+  function findWatchProviderContainer() {
+    const section = document.querySelector(`
       div[data-attrid='kc:/tv/tv_program:media_actions_wholepage'],
       div[data-attrid='kc:/film/film:media_actions_wholepage'],
       div[data-attrid='kc:/broadcast/broadcast_program:media_actions_wholepage'],
-      div[data-attrid*='media_actions_wholepage']
+      div[data-attrid*='media_actions_wholepage'],
+      div[data-attrid*='media_actions']:not([data-attrid*='header'])
     `);
 
-    if (mediaActions) {
-      const roleList = mediaActions.querySelector("div[role='list']");
-      if (roleList) {
-        return roleList;
-      }
+    if (!section) {
+      return null;
+    }
 
-      // Check if there are provider links / listitems already present
-      const firstProviderLink = mediaActions.querySelector("a[href], [role='listitem']");
-      if (firstProviderLink && firstProviderLink.parentElement && firstProviderLink.parentElement !== mediaActions) {
-        return firstProviderLink.parentElement;
+    // 1. Direct role="list" within the section
+    const roleList = section.querySelector("div[role='list']");
+    if (roleList) {
+      return { el: roleList, method: 'prepend' };
+    }
+
+    // 2. Carousel container inside the section
+    const carousel = section.querySelector("g-scrolling-carousel");
+    if (carousel) {
+      const target = carousel.querySelector("div[role='list']") || carousel.firstElementChild || carousel;
+      return { el: target, method: 'prepend' };
+    }
+
+    // 3. Existing provider items/links inside the section (exclude buttons in action rows)
+    const providerLinks = section.querySelectorAll("a[href]:not([role='button'])");
+    for (const link of providerLinks) {
+      const parent = link.parentElement;
+      if (parent && parent !== section && !parent.getAttribute('data-attrid') && parent.getAttribute('role') !== 'group') {
+        return { el: parent, method: 'prepend' };
       }
     }
 
-    return null;
+    // 4. If section has multiple child divs (Child 0 = "Where to watch" header, Child 1 = provider list)
+    if (section.children.length > 1) {
+      return { el: section.children[1], method: 'prepend' };
+    }
+
+    // 5. Append inside section directly (below header, never into firstElementChild)
+    return { el: section, method: 'append' };
   }
 
   /**
    * Main injection logic into Google SERP.
+   * Uses earlier placement only: injected directly into the "Where to Watch" list.
+   * Zero interference with header action buttons (Stremio, Already watched, Want to watch).
    */
   async function injectNuvio() {
     const media = extractMediaMetadata();
@@ -286,17 +270,17 @@
 
     let injectedInPanel = false;
 
-    // Target 1: Watch Options / Media Actions Provider List
+    // Primary Target: "Where to Watch" Streaming Provider List (Earlier Placement)
     const existingCard = document.getElementById(NUVIO_CARD_ID);
-    const providerList = findWatchProviderList();
+    const target = findWatchProviderContainer();
 
-    if (providerList) {
+    if (target && target.el) {
       if (!existingCard) {
         const card = createProviderCard(media);
-        if (providerList.firstChild) {
-          providerList.insertBefore(card, providerList.firstChild);
+        if (target.method === 'prepend' && target.el.firstChild) {
+          target.el.insertBefore(card, target.el.firstChild);
         } else {
-          providerList.appendChild(card);
+          target.el.appendChild(card);
         }
       }
       injectedInPanel = true;
@@ -304,23 +288,8 @@
       existingCard.remove();
     }
 
-    // Target 2: Header action bar (alongside Watchlist / Share buttons)
-    const actionRow = document.querySelector(
-      "div[data-attrid^='kc:/film/film:'] [role='group'], div[data-attrid^='kc:/tv/tv_program:'] [role='group']"
-    );
-
-    const existingHeaderBtn = document.getElementById(NUVIO_HEADER_BTN_ID);
-    if (actionRow) {
-      if (!existingHeaderBtn) {
-        const headerBtn = createHeaderActionButton(media);
-        actionRow.insertBefore(headerBtn, actionRow.firstChild);
-      }
-      injectedInPanel = true;
-    } else if (existingHeaderBtn) {
-      existingHeaderBtn.remove();
-    }
-
-    // Target 3: Fallback Floating Pill
+    // Fallback Target: Floating Action Pill (FAB)
+    // Only displayed if Google Knowledge Panel does not offer a "Where to Watch" section
     const existingFab = document.getElementById(NUVIO_FAB_ID);
     if (!injectedInPanel && settings.enableFabFallback) {
       const hasKnowledgePanel = Boolean(
@@ -332,7 +301,6 @@
         document.body.appendChild(fab);
       }
     } else if (injectedInPanel && existingFab) {
-      // If we successfully injected into the panel, no need for floating button
       existingFab.remove();
     }
   }
