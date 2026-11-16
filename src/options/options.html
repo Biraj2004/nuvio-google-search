@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nuvio Settings - Google Search Extension</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="options-layout">
+    <header class="options-header">
+      <div class="brand">
+        <img src="../icons/icon-48.png" alt="Nuvio" class="brand-logo">
+        <div>
+          <h1 class="brand-title">Nuvio Settings</h1>
+          <p class="brand-subtitle">Configuration for Google Search Integration</p>
+        </div>
+      </div>
+      <a href="https://nuvio-web.vercel.app/" target="_blank" rel="noopener noreferrer" class="header-link">Open Nuvio Web</a>
+    </header>
+
+    <main class="options-main">
+      <!-- Section 1: Launch Behavior -->
+      <section class="card">
+        <h2 class="card-title">Launch Preference</h2>
+        <p class="card-desc">Define how movies and TV series open when clicked in Google Search results.</p>
+
+        <div class="form-group">
+          <label for="select-launch-mode" class="form-label">Default Launch Action</label>
+          <select id="select-launch-mode" class="form-select">
+            <option value="ask">Ask each time (Native-style permission prompt)</option>
+            <option value="smart">Smart Launch (Desktop first, automatic Web fallback)</option>
+            <option value="web">Always open in Nuvio Web</option>
+            <option value="desktop">Always open in Nuvio Desktop</option>
+          </select>
+          <span class="form-hint">When set to "Ask each time", clicking Watch will show the browser modal with the option to remember your choice.</span>
+        </div>
+      </section>
+
+      <!-- Section 2: Endpoints and Protocols -->
+      <section class="card">
+        <h2 class="card-title">Endpoints and Protocols</h2>
+        <p class="card-desc">Configure the custom scheme for your desktop application and web client target.</p>
+
+        <div class="form-group">
+          <label for="input-protocol-scheme" class="form-label">Desktop Protocol Scheme</label>
+          <input type="text" id="input-protocol-scheme" class="form-input" placeholder="nuvio://">
+          <span class="form-hint">URI scheme registered by the desktop application. Default: nuvio:// (can also use stremio://).</span>
+        </div>
+
+        <div class="form-group">
+          <label for="input-web-url" class="form-label">Nuvio Web Base URL</label>
+          <input type="url" id="input-web-url" class="form-input" placeholder="https://nuvio-web.vercel.app/">
+          <span class="form-hint">Web client fallback URL. Must include protocol (https://).</span>
+        </div>
+
+        <div class="form-group">
+          <label for="input-timeout" class="form-label">App Detection Timeout (ms)</label>
+          <input type="number" id="input-timeout" class="form-input" min="500" max="5000" step="100" placeholder="1500">
+          <span class="form-hint">Time in milliseconds to wait for the desktop app to handle protocol before triggering web fallback (500 to 5000 ms).</span>
+        </div>
+      </section>
+
+      <!-- Section 3: UI and Behavior -->
+      <section class="card">
+        <h2 class="card-title">Integration Features</h2>
+        <p class="card-desc">Customize UI elements and fallback behavior inside Google Search.</p>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="cb-fab-fallback" class="checkbox-input">
+            <div class="checkbox-content">
+              <span class="checkbox-title">Enable Floating Action Pill Fallback</span>
+              <span class="checkbox-desc">Show a subtle "Watch on Nuvio" button if Google does not render any streaming provider container for the title.</span>
+            </div>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="cb-web-prompt-cancel" class="checkbox-input">
+            <div class="checkbox-content">
+              <span class="checkbox-title">Suggest Web on Cancellation</span>
+              <span class="checkbox-desc">Show a subtle notification to open in Web if desktop app launch is cancelled in the modal.</span>
+            </div>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" id="cb-auto-search" class="checkbox-input">
+            <div class="checkbox-content">
+              <span class="checkbox-title">Auto-Search in Nuvio Web</span>
+              <span class="checkbox-desc">Automatically populate and trigger the search when opening Nuvio Web.</span>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Actions Bar -->
+      <div class="options-actions">
+        <button type="button" id="btn-reset-all" class="btn btn-secondary">Reset to Defaults</button>
+        <div class="actions-right">
+          <span id="save-status" class="save-status"></span>
+          <button type="button" id="btn-save" class="btn btn-primary">Save Settings</button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="options-footer">
+      <p>Nuvio for Google Search · Open Source Media Companion · Compatible with Chrome, Brave, Opera, Edge, Firefox</p>
+    </footer>
+  </div>
+
+  <script src="../utils/browser-polyfill.js"></script>
+  <script src="../utils/storage.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

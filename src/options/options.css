@@ -1,0 +1,258 @@
+/* ==========================================================================
+   Nuvio Options Stylesheet
+   No emojis, clean modern dark UI.
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0d0d0d;
+  color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.options-layout {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.options-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: block;
+}
+
+.brand-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  font-size: 13px;
+  color: #888888;
+  margin-top: 2px;
+}
+
+.header-link {
+  font-size: 13px;
+  color: #3b82f6;
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.header-link:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+.options-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.card {
+  background: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: #888888;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #dddddd;
+  margin-bottom: 6px;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 10px 14px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.form-select option {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.form-hint {
+  display: block;
+  font-size: 12px;
+  color: #777777;
+  margin-top: 6px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-input {
+  width: 17px;
+  height: 17px;
+  accent-color: #3b82f6;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.checkbox-content {
+  flex: 1;
+}
+
+.checkbox-title {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #e0e0e0;
+  line-height: 1.3;
+}
+
+.checkbox-desc {
+  display: block;
+  font-size: 12px;
+  color: #777777;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.options-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+}
+
+.actions-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.save-status {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2ecc71;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.save-status.visible {
+  opacity: 1;
+}
+
+.btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-secondary {
+  background: #1f1f1f;
+  color: #cccccc;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.btn-secondary:hover {
+  background: #282828;
+  color: #ffffff;
+}
+
+.options-footer {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  font-size: 12px;
+  color: #666666;
+}
