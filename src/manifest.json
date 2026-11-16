@@ -420,7 +420,6 @@
       "js": [
         "utils/browser-polyfill.js",
         "utils/storage.js",
-        "utils/modal.js",
         "utils/protocol-launcher.js",
         "content/google.js"
       ],

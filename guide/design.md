@@ -36,7 +36,7 @@ The Nuvio for Google Search interface adheres to strict design standards:
 - **Text Hierarchy**:
   - Title: 14px Semi-Bold (600 weight), `#1f2937` (light) / `#f3f4f6` (dark).
   - Badge: "Free", 11px Semi-Bold, contained in rounded violet pill.
-  - Subtitle: "Desktop App · Web Client", 12px Regular, `#4b5563` (light) / `#9ca3af` (dark).
+  - Subtitle: "Nuvio Web · Free Stream", 12px Regular, `#4b5563` (light) / `#9ca3af` (dark).
 - **CTA**: "Watch" button on the right edge, styled to match Google streaming service action chips with Nuvio's signature violet primary color.
 
 ### 2. Header Action Button
@@ -45,26 +45,7 @@ The Nuvio for Google Search interface adheres to strict design standards:
 - **Icon**: 18x18px Nuvio logo tile.
 - **Label**: "Watch on Nuvio", 13px Medium.
 
-### 3. Permission Modal Dialog
-- **Backdrop**: Full viewport overlay with `rgba(13, 16, 30, 0.7)` and `backdrop-filter: blur(5px)`.
-- **Background Scroll Lock**: Automatically sets `overflow: hidden !important` and `overscroll-behavior: contain !important` on `<html>` and `<body>` via `.nuvio-modal-open` while the dialog is active, cleanly restoring original page scrolling when closed.
-- **Dialog Box**: 460px maximum width, 12px border radius, subtle violet drop shadow.
-- **Header**:
-  - 38x38px Nuvio logo.
-  - Title: "Open in Nuvio Desktop App?", 16px Semi-Bold.
-  - Subtitle: "https://www.google.com wants to open this application.", 12px Regular.
-  - Close button with `&times;` glyph.
-- **Media Information Card**:
-  - Displays content type tag (e.g. "MOVIE · 2024 · tt0000000").
-  - Title in bold 15px text with ellipsis overflow protection.
-- **Checkbox Row**:
-  - Checkbox: "Always allow google.com to open links in Nuvio Desktop".
-- **Action Buttons**:
-  - `Cancel`: Secondary button, neutral background.
-  - `Open in Web`: Secondary button, neutral background.
-  - `Open Nuvio App`: Primary violet action button, auto-focused.
-
-### 4. Floating Action Pill (FAB) Fallback
+### 3. Floating Action Pill (FAB) Fallback
 - **Location**: Fixed bottom-right of viewport (`bottom: 24px`, `right: 24px`), z-index `9999`.
 - **Styling**: `#0d101e` solid background with 1px `rgba(182, 77, 245, 0.35)` border.
 - **Behavior**: Auto-hides on scroll-down, restores on scroll-up. Click triggers watch action.

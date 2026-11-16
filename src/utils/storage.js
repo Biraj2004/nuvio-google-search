@@ -1,33 +1,19 @@
 /**
  * Configuration and Storage Management for Nuvio for Google Search.
+ * Direct web streaming configuration.
  */
 (function (global) {
   'use strict';
 
   const DEFAULT_SETTINGS = {
-    // 'ask' = Prompt user with browser-like launch dialog
-    // 'smart' = Attempt desktop protocol first, automatically fallback to web on failure
-    // 'desktop' = Only launch desktop app
-    // 'web' = Only open in Nuvio Web
-    launchMode: 'ask',
-
-    // Protocol scheme for Nuvio Desktop app
-    protocolScheme: 'nuvio://',
-
     // Base URL for Nuvio Web client
     webBaseUrl: 'https://nuvio-web.vercel.app/',
-
-    // Milliseconds to wait for OS protocol handler before triggering web fallback
-    timeoutMs: 1500,
 
     // Show floating action button when Google Knowledge panel has no streaming chip
     enableFabFallback: true,
 
     // Automatically trigger search on Nuvio Web when navigated
-    autoSearchWeb: true,
-
-    // User opted to remember decision
-    rememberChoice: false
+    autoSearchWeb: true
   };
 
   const NuvioStorage = {
@@ -57,16 +43,6 @@
         console.error('[Nuvio] Failed to save settings to storage:', e);
         return false;
       }
-    },
-
-    /**
-     * Set the user's permanent launch choice.
-     */
-    async setLaunchMode(mode, remember = true) {
-      return this.saveSettings({
-        launchMode: mode,
-        rememberChoice: remember
-      });
     },
 
     /**

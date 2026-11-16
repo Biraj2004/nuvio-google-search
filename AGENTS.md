@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-`nuvio-google-search` is an open-source browser extension that integrates Nuvio streaming options directly into Google Search results for movies and television series. It launches titles in the Nuvio Desktop application (`nuvio://`) first, detecting whether the native app is available and automatically falling back to the Nuvio Web client (`https://nuvio-web.vercel.app/`).
+`nuvio-google-search` is an open-source browser extension that integrates Nuvio streaming options directly into Google Search results for movies and television series. It launches titles directly in the Nuvio Web client (`https://nuvio-web.vercel.app/`) with automated search query execution, with zero Windows app requirements and zero intrusive popups.
 
 ## Project Principles
 
@@ -41,7 +41,7 @@ nuvio-google-search/
 │   │   └── service-worker.js       # Background service worker
 │   ├── content/
 │   │   ├── google.js               # Google SERP content script
-│   │   ├── google.css              # Styles for injected cards and modal
+│   │   ├── google.css              # Styles for injected cards and buttons
 │   │   └── nuvio-web.js            # Companion script for Nuvio Web client
 │   ├── icons/
 │   │   ├── icon-16.png             # 16x16 icon
@@ -60,8 +60,7 @@ nuvio-google-search/
 │   │   └── popup.js                # Popup controller
 │   └── utils/
 │       ├── browser-polyfill.js     # Unified chrome.* and browser.* wrapper
-│       ├── modal.js                # Native-style in-page permission modal
-│       ├── protocol-launcher.js    # Protocol handler with fallback timer
+│       ├── protocol-launcher.js    # Direct Web launcher and URL builder
 │       └── storage.js              # chrome.storage synchronization layer
 ├── scripts/
 │   └── build.py                    # Build script generating dist/ and release zips
@@ -73,15 +72,13 @@ nuvio-google-search/
     └── releases/                   # Zip packages for distribution
 ```
 
-## Protocol Launcher & Detection Mechanics
+## Direct Web Launch Mechanics
 
-When a user clicks "Watch on Nuvio":
+When a user clicks "Watch" or "Watch on Nuvio":
 1. **Metadata Resolution**: Scrapes title, release year, media type (`movie` vs `series`), and IMDb ID (`tt\d+`).
-2. **Mode Check**:
-   - `ask`: Displays the in-page permission dialog (with background scrolling locked). If user confirms with "Always allow", updates storage to `smart`. If cancelled, closes the dialog cleanly and remains in `ask` mode.
-   - `smart`: Triggers `nuvio://` via hidden iframe or anchor, and starts a 1500ms timer. If window loses focus (`blur`) or page hides, app launch succeeded. If timer elapses without blur, auto-opens `https://nuvio-web.vercel.app/`.
-   - `web`: Directly opens web URL in a new tab.
-   - `desktop`: Directly triggers `nuvio://` protocol.
+2. **Direct Web Navigation**: Immediately constructs the targeted search URL for `https://nuvio-web.vercel.app/` (`?q=<title>&imdb=<id>&type=<type>`) and opens it in a new tab.
+3. **Companion Auto-Search**: On `nuvio-web.vercel.app`, the companion content script automatically populates the search input and dispatches synthetic React-compatible change and input events to display streaming options instantly.
+4. **Zero Friction**: No Windows desktop app protocol schemes (`nuvio://`), no detection timeouts, and no in-page permission popups.
 
 ## Google Search DOM Strategy
 

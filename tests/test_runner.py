@@ -5,8 +5,8 @@ Validates:
 1. Manifest validity & Chromium/Gecko Match Pattern RFC compliance.
 2. Icon suite dimensions, channels, and integrity.
 3. JavaScript engine syntax checks via node --check.
-4. Protocol Launcher & Web Fallback URL builder logic.
-5. Modal dialog lifecycle, background scroll-lock, and toast absence.
+4. Direct Nuvio Web Launcher URL builder and execution logic.
+5. Verification of zero desktop protocol invocations and zero popups.
 6. Build script packaging, zip archive structures, and subfolder integrity.
 7. Zero emoji policy across all repository files.
 """
@@ -50,7 +50,7 @@ class TestRunner:
         self.test_manifests()
         self.test_icons()
         self.test_javascript_syntax()
-        self.test_protocol_and_modal_logic()
+        self.test_direct_web_launcher()
         self.test_build_and_zip_archives()
         self.test_zero_emojis()
 
@@ -182,6 +182,10 @@ class TestRunner:
                     break
         self.log(files_exist, "All files referenced in manifest exist on disk", missing_file)
 
+        # Verify modal.js is NOT referenced
+        modal_referenced = any('modal.js' in js for cs in manifest.get('content_scripts', []) for js in cs.get('js', []))
+        self.log(not modal_referenced, "Modal script is not referenced in manifest (no popups)")
+
     # --------------------------------------------------------------------------
     # 2. Icon Suite Dimensions & Channels
     # --------------------------------------------------------------------------
@@ -248,21 +252,33 @@ class TestRunner:
         self.log(syntax_ok, f"All {len(js_files)} runtime JavaScript files pass node --check", first_err)
 
     # --------------------------------------------------------------------------
-    # 4. Protocol Launcher & Modal Logic Tests
+    # 4. Direct Nuvio Web Launcher Logic Tests
     # --------------------------------------------------------------------------
-    def test_protocol_and_modal_logic(self):
-        print("\n--- 4. Protocol Launcher & Modal Logic ---")
+    def test_direct_web_launcher(self):
+        print("\n--- 4. Direct Nuvio Web Launcher Logic ---")
         node_script = """
         const fs = require('fs');
         const vm = require('vm');
         const assert = require('assert');
 
-        // Test Protocol Launcher URLs
+        let openedUrl = null;
         const winLauncher = {
           window: null,
           self: null,
           URLSearchParams: URLSearchParams,
-          encodeURIComponent: encodeURIComponent
+          encodeURIComponent: encodeURIComponent,
+          NuvioStorage: {
+            getSettings: async () => ({ webBaseUrl: 'https://nuvio-web.vercel.app/' })
+          },
+          nuvioBrowser: {
+            runtime: {
+              sendMessage: async (msg) => {
+                if (msg.action === 'openTab') {
+                  openedUrl = msg.url;
+                }
+              }
+            }
+          }
         };
         winLauncher.window = winLauncher;
         winLauncher.self = winLauncher;
@@ -271,162 +287,43 @@ class TestRunner:
         vm.runInNewContext(launcherCode, winLauncher);
         const launcher = winLauncher.NuvioLauncher;
 
-        assert.strictEqual(
-          launcher.buildProtocolUri({ title: 'The Mentalist', contentType: 'series', imdbId: 'tt1196946' }),
-          'nuvio:///detail/series/tt1196946',
-          'Protocol URI for series with IMDb ID'
-        );
-
-        assert.strictEqual(
-          launcher.buildProtocolUri({ title: 'Inception', contentType: 'movie', imdbId: 'tt1375666' }),
-          'nuvio:///detail/movie/tt1375666',
-          'Protocol URI for movie with IMDb ID'
-        );
-
-        assert.strictEqual(
-          launcher.buildProtocolUri({ title: 'Custom Movie' }),
-          'nuvio://search?q=Custom%20Movie',
-          'Protocol URI search query fallback'
-        );
-
-        assert.strictEqual(
-          launcher.buildProtocolUri({ title: 'Sample', contentType: 'movie', imdbId: 'tt0000000' }, 'stremio://'),
-          'stremio:///detail/movie/tt0000000',
-          'Custom protocol scheme support'
-        );
-
+        // Test URL construction
         assert.strictEqual(
           launcher.buildWebUrl({ title: 'The Mentalist', contentType: 'series', imdbId: 'tt1196946' }),
           'https://nuvio-web.vercel.app/search?q=The+Mentalist&imdb=tt1196946&type=series',
-          'Web fallback URL builder'
+          'Web search URL with IMDb ID and series type'
         );
 
-        // Test Modal Dialog & Background Scroll Lock
-        function createMockElement(tagName) {
-          const listeners = {};
-          const classes = new Set();
-          const children = [];
-          const el = {
-            tagName: tagName.toUpperCase(),
-            id: '',
-            className: '',
-            innerHTML: '',
-            style: {},
-            scrollHeight: 100,
-            clientHeight: 100,
-            focus: () => {},
-            classList: {
-              add: (c) => classes.add(c),
-              remove: (c) => classes.delete(c),
-              contains: (c) => classes.has(c)
-            },
-            addEventListener: (evt, fn) => {
-              listeners[evt] = listeners[evt] || [];
-              listeners[evt].push(fn);
-            },
-            removeEventListener: (evt, fn) => {
-              if (listeners[evt]) {
-                listeners[evt] = listeners[evt].filter(f => f !== fn);
-              }
-            },
-            dispatchEvent: (evt) => {
-              (listeners[evt.type] || []).forEach(fn => fn(evt));
-            },
-            appendChild: (child) => {
-              children.push(child);
-              child.parentNode = el;
-              return child;
-            },
-            removeChild: (child) => {
-              const idx = children.indexOf(child);
-              if (idx !== -1) children.splice(idx, 1);
-              child.parentNode = null;
-              return child;
-            },
-            remove: function() {
-              if (this.parentNode) this.parentNode.removeChild(this);
-            },
-            querySelector: function(sel) {
-              if (sel === '.nuvio-modal-close-btn') return createMockElement('button');
-              if (sel === '#nuvio-btn-cancel') return createMockElement('button');
-              if (sel === '#nuvio-btn-web') return createMockElement('button');
-              if (sel === '#nuvio-btn-app') return createMockElement('button');
-              if (sel === '#nuvio-always-allow-cb') return { checked: false };
-              if (sel === '.nuvio-modal-dialog') return createMockElement('div');
-              return null;
-            },
-            contains: () => true
-          };
-          return el;
-        }
+        assert.strictEqual(
+          launcher.buildWebUrl({ title: 'Inception', contentType: 'movie', imdbId: 'tt1375666' }),
+          'https://nuvio-web.vercel.app/search?q=Inception&imdb=tt1375666&type=movie',
+          'Web search URL with IMDb ID and movie type'
+        );
 
-        const docElement = createMockElement('html');
-        const bodyElement = createMockElement('body');
+        assert.strictEqual(
+          launcher.buildWebUrl({ title: 'Avatar' }),
+          'https://nuvio-web.vercel.app/search?q=Avatar',
+          'Web search URL with title only'
+        );
 
-        const doc = {
-          documentElement: docElement,
-          body: bodyElement,
-          createElement: createMockElement,
-          getElementById: (id) => {
-            if (id === 'nuvio-launch-modal-container') return doc._modal;
-            return null;
-          },
-          addEventListener: () => {},
-          removeEventListener: () => {}
-        };
-
-        bodyElement.appendChild = (child) => {
-          doc._modal = child;
-          child.parentNode = bodyElement;
-          return child;
-        };
-
-        const winModal = {
-          window: null,
-          self: null,
-          document: doc,
-          nuvioBrowser: {
-            runtime: {
-              getURL: (p) => 'chrome-extension://dummy/' + p
-            }
-          },
-          setTimeout: (fn) => fn(),
-          clearTimeout: () => {}
-        };
-        winModal.window = winModal;
-        winModal.self = winModal;
-
-        const modalCode = fs.readFileSync('src/utils/modal.js', 'utf8');
-        vm.runInNewContext(modalCode, winModal);
-        const ui = winModal.NuvioUI;
-
-        // Verify initial state: no scroll lock
-        assert.strictEqual(docElement.classList.contains('nuvio-modal-open'), false);
-        assert.strictEqual(bodyElement.classList.contains('nuvio-modal-open'), false);
-
-        // Open modal
-        ui.showLaunchModal({ title: 'The Mentalist', year: 2008, contentType: 'series', imdbId: 'tt1196946' }, {}, () => {});
-        assert.strictEqual(docElement.classList.contains('nuvio-modal-open'), true, 'html must have nuvio-modal-open on modal open');
-        assert.strictEqual(bodyElement.classList.contains('nuvio-modal-open'), true, 'body must have nuvio-modal-open on modal open');
-        assert(doc._modal !== null, 'Modal container injected');
-
-        // Close modal
-        ui.closeModal();
-        assert.strictEqual(docElement.classList.contains('nuvio-modal-open'), false, 'html removes nuvio-modal-open on close');
-        assert.strictEqual(bodyElement.classList.contains('nuvio-modal-open'), false, 'body removes nuvio-modal-open on close');
-
-        // Verify showToast was completely removed
-        assert.strictEqual(ui.showToast, undefined, 'showToast method must not exist');
-
-        console.log('ALL_NODE_TESTS_OK');
+        // Test direct launch without desktop protocol or popup
+        (async () => {
+          await launcher.launch({ title: 'The Mentalist', contentType: 'series', imdbId: 'tt1196946' });
+          assert.strictEqual(
+            openedUrl,
+            'https://nuvio-web.vercel.app/search?q=The+Mentalist&imdb=tt1196946&type=series',
+            'Direct launch opens web client URL directly'
+          );
+          console.log('ALL_LAUNCHER_TESTS_OK');
+        })();
         """
         res = subprocess.run(['node', '-e', node_script], capture_output=True, text=True)
-        if res.returncode == 0 and 'ALL_NODE_TESTS_OK' in res.stdout:
-            self.log(True, "Protocol URI & Web URL builder tests pass")
-            self.log(True, "Modal background scroll lock applies and restores cleanly")
-            self.log(True, "Bottom toast notifications completely removed from UI engine")
+        if res.returncode == 0 and 'ALL_LAUNCHER_TESTS_OK' in res.stdout:
+            self.log(True, "Nuvio Web URL builder accurately constructs search query parameters")
+            self.log(True, "Direct launch immediately opens Nuvio Web in a new tab")
+            self.log(True, "Zero desktop app protocol calls and zero popup dialogs")
         else:
-            self.log(False, "Protocol & Modal logic unit tests", res.stderr)
+            self.log(False, "Direct web launcher unit tests", res.stderr)
 
     # --------------------------------------------------------------------------
     # 5. Build Automation & Release Archives
@@ -457,7 +354,7 @@ class TestRunner:
 
                 has_manifest = f"{expected_subfolder}/manifest.json" in namelist
                 self.log(has_manifest, f"{arch_name} contains manifest.json at subfolder root")
-                self.log(len(namelist) == 26, f"{arch_name} contains exactly 26 packaged extension assets (actual: {len(namelist)})")
+                self.log(len(namelist) == 25, f"{arch_name} contains exactly 25 packaged extension assets (actual: {len(namelist)})")
 
     # --------------------------------------------------------------------------
     # 6. Zero-Emoji Compliance

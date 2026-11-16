@@ -39,7 +39,6 @@ nuvio-google-search-chromium-v1.0.0.zip
     │   └── popup.js
     └── utils/
         ├── browser-polyfill.js
-        ├── modal.js
         ├── protocol-launcher.js
         └── storage.js
 ```

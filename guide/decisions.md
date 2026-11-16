@@ -15,31 +15,24 @@ This document records the architectural and design decisions made for the Nuvio 
 
 ---
 
-### ADR-002: Protocol Detection via Focus and Visibility Heuristics
+### ADR-002: Direct Web Client Streaming (Zero Windows App Requirement, Zero Popups)
 
-- **Status**: Accepted
-- **Context**: Web browsers do not provide a standard synchronous API to check whether an external application protocol (e.g. `nuvio://`) is registered on the operating system.
-- **Decision**: Implement a focus/visibility detection pattern:
-  1. Trigger protocol scheme via an isolated hidden `<iframe>` or temporary anchor click.
-  2. Attach temporary listeners for `blur` and `visibilitychange`.
-  3. If the application is registered and opened (or the browser shows its native protocol prompt), the page loses focus (`blur`) or becomes hidden (`document.hidden = true`).
-  4. If a timeout (default: 1500ms) elapses without focus change, treat the desktop application as unavailable and invoke the web fallback.
-- **Consequences**: Works reliably across Chrome, Brave, Opera, Edge, and Firefox without requiring native messaging hosts or invasive operating system binaries.
+- **Status**: Accepted (Supersedes prior protocol detection & modal prompt)
+- **Context**: Relying on custom Windows desktop protocol schemes (`nuvio://`) and displaying intermediate permission modal prompts introduces unnecessary cognitive load, browser warnings, and launch latency. Users prefer directly streaming movies and series online.
+- **Decision**: Streamline the watch action directly to the Nuvio Web streaming client (`https://nuvio-web.vercel.app/`):
+  1. Clicking "Watch on Nuvio" immediately navigates to Nuvio Web in a new tab.
+  2. Bypasses all Windows desktop application protocols, timeouts, and native confirmation gates.
+  3. Eliminates all in-page modal dialogs and background scroll interruptions.
+- **Consequences**: Instantaneous one-click streaming, zero platform-specific protocol hurdles, zero permission dialog friction, and optimal cross-browser reliability.
 
 ---
 
-### ADR-003: In-Page Permission Dialog with "Always Allow" Preference
+### ADR-003: High-Fidelity Brand Integration in Google Search Knowledge Panels
 
 - **Status**: Accepted
-- **Context**: Users expect transparency and control over when external desktop applications are invoked versus opening the web client. The user requirement explicitly calls for a browser-native-like popup with an "Always allow" option and fallback to web when cancelled.
-- **Decision**: Provide an in-page modal dialog (`src/utils/modal.js`) matching Google and browser system prompt aesthetics:
-  - Header with official Nuvio logo and clear origin text ("https://www.google.com wants to open this application").
-  - Clear title and media metadata card.
-  - Checkbox: "Always allow google.com to open links in Nuvio Desktop".
-  - Dedicated buttons for "Open Nuvio App", "Open in Web", and "Cancel".
-  - If cancelled, keep the default to ask each time and cleanly close the dialog without intrusive notifications.
-  - While open, locks background scrolling to maintain focus and prevent background disalignment.
-- **Consequences**: Gives the user full authority over app launches, prevents unintentional app triggers, and matches expected browser security dialog behavior.
+- **Context**: The injected Nuvio streaming action should look like a first-class, authentic streaming service directly within Google's "Where to Watch" provider stack.
+- **Decision**: Render official Nuvio squircle provider branding alongside other major platforms (Netflix, Prime Video, Disney+), displaying "Free" badges and "Watch" action chips matching Google Search native design language.
+- **Consequences**: Familiar, high-trust user experience with zero visual drift.
 
 ---
 

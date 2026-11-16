@@ -24,54 +24,21 @@
 
     <main class="popup-body">
       <section class="section">
-        <label class="section-label">Launch Preference</label>
-        <p class="section-desc">Select what happens when clicking Watch on Nuvio in Google Search.</p>
-
-        <div class="options-group">
-          <label class="radio-card">
-            <input type="radio" name="launchMode" value="ask" id="mode-ask">
-            <div class="radio-content">
-              <span class="radio-title">Ask each time</span>
-              <span class="radio-desc">Show native prompt with choice to open Desktop or Web</span>
-            </div>
-          </label>
-
-          <label class="radio-card">
-            <input type="radio" name="launchMode" value="smart" id="mode-smart">
-            <div class="radio-content">
-              <span class="radio-title">Smart Launch (Recommended)</span>
-              <span class="radio-desc">Try Desktop app first; fallback to Web if not detected</span>
-            </div>
-          </label>
-
-          <label class="radio-card">
-            <input type="radio" name="launchMode" value="web" id="mode-web">
-            <div class="radio-content">
-              <span class="radio-title">Always Nuvio Web</span>
-              <span class="radio-desc">Directly open nuvio-web.vercel.app in a new tab</span>
-            </div>
-          </label>
-
-          <label class="radio-card">
-            <input type="radio" name="launchMode" value="desktop" id="mode-desktop">
-            <div class="radio-content">
-              <span class="radio-title">Always Desktop App</span>
-              <span class="radio-desc">Always launch via nuvio:// custom protocol</span>
-            </div>
-          </label>
+        <label class="section-label">Web Streaming Target</label>
+        <p class="section-desc">Clicking Watch on Google Search opens titles directly in Nuvio Web.</p>
+        <div class="web-target-box">
+          <span class="target-url" id="target-web-url">https://nuvio-web.vercel.app/</span>
         </div>
       </section>
 
       <section class="actions-section">
-        <button type="button" id="btn-reset-decision" class="btn btn-secondary">Reset Saved Decision</button>
-        <button type="button" id="btn-open-options" class="btn btn-secondary">More Settings</button>
+        <button type="button" id="btn-open-web" class="btn btn-primary">Open Nuvio Web</button>
+        <button type="button" id="btn-open-options" class="btn btn-secondary">Settings</button>
       </section>
     </main>
 
     <footer class="popup-footer">
-      <a href="https://nuvio-web.vercel.app/" target="_blank" rel="noopener noreferrer" class="footer-link">Nuvio Web</a>
-      <span class="footer-sep">·</span>
-      <a href="https://github.com/NuvioMedia/NuvioDesktop" target="_blank" rel="noopener noreferrer" class="footer-link">Desktop App</a>
+      <a href="https://nuvio-web.vercel.app/" target="_blank" rel="noopener noreferrer" class="footer-link">Nuvio Web Client</a>
       <span class="footer-sep">·</span>
       <span id="extension-version" class="footer-version">v1.0.0</span>
     </footer>

@@ -129,7 +129,7 @@
           <span class="nuvio-provider-name">Nuvio</span>
           <span class="nuvio-provider-badge">Free</span>
         </div>
-        <div class="nuvio-provider-meta">Desktop App · Web Client</div>
+        <div class="nuvio-provider-meta">Nuvio Web · Free Stream</div>
       </div>
       <div class="nuvio-provider-cta">Watch</div>
     `;

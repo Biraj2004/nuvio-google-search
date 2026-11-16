@@ -21,13 +21,9 @@ if (api && api.runtime) {
   api.runtime.onInstalled.addListener(async (details) => {
     if (details.reason === 'install') {
       const defaultSettings = {
-        launchMode: 'ask',
-        protocolScheme: 'nuvio://',
         webBaseUrl: 'https://nuvio-web.vercel.app/',
-        timeoutMs: 1500,
         enableFabFallback: true,
-        autoSearchWeb: true,
-        rememberChoice: false
+        autoSearchWeb: true
       };
 
       if (api.storage && api.storage.sync) {

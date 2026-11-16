@@ -112,81 +112,52 @@ body {
   line-height: 1.35;
 }
 
-.options-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.radio-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
+.web-target-box {
   padding: 10px 12px;
   background: #14182c;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  margin-top: 4px;
 }
 
-.radio-card:hover {
-  background: #1c223d;
-  border-color: rgba(168, 85, 247, 0.3);
-}
-
-.radio-card input[type="radio"] {
-  accent-color: #a855f7;
-  margin-top: 2px;
-  cursor: pointer;
-}
-
-.radio-card input[type="radio"]:checked + .radio-content .radio-title {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.radio-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.radio-title {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #e5e7eb;
-  line-height: 1.25;
-}
-
-.radio-desc {
-  display: block;
-  font-size: 11px;
-  color: #8b92a5;
-  margin-top: 2px;
-  line-height: 1.3;
+.target-url {
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 11.5px;
+  color: #38bdf8;
+  word-break: break-all;
 }
 
 .actions-section {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
+  margin-top: 14px;
+  padding-top: 14px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .btn {
   font-family: inherit;
   font-size: 11.5px;
-  font-weight: 500;
-  padding: 7px 10px;
+  font-weight: 600;
+  padding: 8px 10px;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.15s ease;
   text-align: center;
   border: 1px solid transparent;
   white-space: nowrap;
+}
+
+.btn-primary {
+  background: #a855f7;
+  color: #ffffff;
+  border-color: #a855f7;
+}
+
+.btn-primary:hover {
+  background: #c084fc;
+  border-color: #c084fc;
 }
 
 .btn-secondary {
