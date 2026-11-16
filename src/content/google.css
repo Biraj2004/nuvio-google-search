@@ -1,61 +1,65 @@
 /* ==========================================================================
    Nuvio for Google Search - Stylesheet
-   Supports Dark and Light modes, responsive layouts, no emojis.
+   Theme-matched to Nuvio's authentic brand palette (Dark Navy, Violet, Cyan).
+   Supports Google Dark and Light themes, no emojis.
    ========================================================================== */
 
 :root {
+  --nuvio-brand-bg: #0d101e;
+  --nuvio-brand-accent: #7c3aed;
+  --nuvio-brand-cyan: #06b6d4;
+
   --nuvio-bg-surface: #ffffff;
   --nuvio-bg-surface-elevated: #f8f9fa;
-  --nuvio-bg-hover: #f1f3f4;
-  --nuvio-text-primary: #202124;
-  --nuvio-text-secondary: #5f6368;
-  --nuvio-text-muted: #70757a;
-  --nuvio-border: #dadce0;
-  --nuvio-primary: #1a73e8;
-  --nuvio-primary-hover: #1557b0;
+  --nuvio-bg-hover: #f3e8ff;
+  --nuvio-text-primary: #1f2937;
+  --nuvio-text-secondary: #4b5563;
+  --nuvio-text-muted: #6b7280;
+  --nuvio-border: #e5e7eb;
+  --nuvio-primary: #7c3aed;
+  --nuvio-primary-hover: #6d28d9;
   --nuvio-primary-text: #ffffff;
-  --nuvio-accent-tag-bg: #e8f0fe;
-  --nuvio-accent-tag-text: #1967d2;
-  --nuvio-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --nuvio-modal-backdrop: rgba(32, 33, 36, 0.6);
+  --nuvio-accent-tag-bg: #f3e8ff;
+  --nuvio-accent-tag-text: #7c3aed;
+  --nuvio-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
+  --nuvio-modal-backdrop: rgba(13, 16, 30, 0.7);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --nuvio-bg-surface: #202124;
-    --nuvio-bg-surface-elevated: #303134;
-    --nuvio-bg-hover: #3c4043;
-    --nuvio-text-primary: #e8eaed;
-    --nuvio-text-secondary: #9aa0a6;
-    --nuvio-text-muted: #80868b;
-    --nuvio-border: #3c4043;
-    --nuvio-primary: #8ab4f8;
-    --nuvio-primary-hover: #aecbfa;
-    --nuvio-primary-text: #202124;
-    --nuvio-accent-tag-bg: #2d3748;
-    --nuvio-accent-tag-text: #8ab4f8;
-    --nuvio-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-    --nuvio-modal-backdrop: rgba(0, 0, 0, 0.75);
+    --nuvio-bg-surface: #121626;
+    --nuvio-bg-surface-elevated: #1a1f33;
+    --nuvio-bg-hover: #242a45;
+    --nuvio-text-primary: #f3f4f6;
+    --nuvio-text-secondary: #9ca3af;
+    --nuvio-text-muted: #6b7280;
+    --nuvio-border: #262c45;
+    --nuvio-primary: #a855f7;
+    --nuvio-primary-hover: #c084fc;
+    --nuvio-primary-text: #ffffff;
+    --nuvio-accent-tag-bg: #2d1f42;
+    --nuvio-accent-tag-text: #c084fc;
+    --nuvio-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    --nuvio-modal-backdrop: rgba(5, 7, 14, 0.82);
   }
 }
 
-/* Also adapt to Google's dynamic dark mode class */
 html[data-darkmode="true"],
 body[data-darkmode="true"] {
-  --nuvio-bg-surface: #202124;
-  --nuvio-bg-surface-elevated: #303134;
-  --nuvio-bg-hover: #3c4043;
-  --nuvio-text-primary: #e8eaed;
-  --nuvio-text-secondary: #9aa0a6;
-  --nuvio-text-muted: #80868b;
-  --nuvio-border: #3c4043;
-  --nuvio-primary: #8ab4f8;
-  --nuvio-primary-hover: #aecbfa;
-  --nuvio-primary-text: #202124;
-  --nuvio-accent-tag-bg: #2d3748;
-  --nuvio-accent-tag-text: #8ab4f8;
-  --nuvio-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-  --nuvio-modal-backdrop: rgba(0, 0, 0, 0.75);
+  --nuvio-bg-surface: #121626;
+  --nuvio-bg-surface-elevated: #1a1f33;
+  --nuvio-bg-hover: #242a45;
+  --nuvio-text-primary: #f3f4f6;
+  --nuvio-text-secondary: #9ca3af;
+  --nuvio-text-muted: #6b7280;
+  --nuvio-border: #262c45;
+  --nuvio-primary: #a855f7;
+  --nuvio-primary-hover: #c084fc;
+  --nuvio-primary-text: #ffffff;
+  --nuvio-accent-tag-bg: #2d1f42;
+  --nuvio-accent-tag-text: #c084fc;
+  --nuvio-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --nuvio-modal-backdrop: rgba(5, 7, 14, 0.82);
 }
 
 /* --------------------------------------------------------------------------
@@ -65,7 +69,7 @@ body[data-darkmode="true"] {
   display: flex;
   align-items: center;
   margin: 6px 0;
-  padding: 8px 12px;
+  padding: 8px 14px;
   background: var(--nuvio-bg-surface);
   border: 1px solid var(--nuvio-border);
   border-radius: 8px;
@@ -90,10 +94,10 @@ body[data-darkmode="true"] {
 .nuvio-provider-icon {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: 7px;
   flex-shrink: 0;
   margin-right: 12px;
-  background: #000;
+  background: #0d101e;
   display: block;
 }
 
@@ -111,7 +115,7 @@ body[data-darkmode="true"] {
 .nuvio-provider-name {
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--nuvio-text-primary);
   line-height: 1.3;
 }
@@ -119,12 +123,12 @@ body[data-darkmode="true"] {
 .nuvio-provider-badge {
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   font-size: 11px;
-  font-weight: 500;
-  padding: 2px 6px;
+  font-weight: 600;
+  padding: 2px 7px;
   border-radius: 4px;
   background: var(--nuvio-accent-tag-bg);
   color: var(--nuvio-accent-tag-text);
-  line-height: 1;
+  line-height: 1.1;
 }
 
 .nuvio-provider-meta {
@@ -136,16 +140,21 @@ body[data-darkmode="true"] {
 }
 
 .nuvio-provider-cta {
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 6px;
   background: var(--nuvio-primary);
   color: var(--nuvio-primary-text);
   font-family: Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   margin-left: 10px;
   white-space: nowrap;
   flex-shrink: 0;
+  transition: background-color 0.15s ease;
+}
+
+.nuvio-provider-card:hover .nuvio-provider-cta {
+  background: var(--nuvio-primary-hover);
 }
 
 /* --------------------------------------------------------------------------
@@ -196,24 +205,25 @@ body[data-darkmode="true"] {
   align-items: center;
   gap: 10px;
   padding: 10px 18px;
-  background: #111111;
+  background: #0d101e;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(182, 77, 245, 0.35);
   border-radius: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 18px rgba(13, 16, 30, 0.5);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none !important;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, opacity 0.2s ease, border-color 0.2s ease;
   user-select: none;
 }
 
 .nuvio-fab:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  background: #1c1c1c;
+  box-shadow: 0 8px 24px rgba(182, 77, 245, 0.35);
+  background: #14182e;
+  border-color: #b64df5;
 }
 
 .nuvio-fab:active {
@@ -223,7 +233,7 @@ body[data-darkmode="true"] {
 .nuvio-fab-icon {
   width: 22px;
   height: 22px;
-  border-radius: 50%;
+  border-radius: 5px;
   display: block;
 }
 
@@ -243,7 +253,7 @@ body[data-darkmode="true"] {
   width: 100vw;
   height: 100vh;
   background: var(--nuvio-modal-backdrop);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(5px);
   z-index: 999999;
   display: flex;
   align-items: center;
@@ -298,8 +308,8 @@ body[data-darkmode="true"] {
 }
 
 .nuvio-modal-logo {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 8px;
   flex-shrink: 0;
 }
@@ -414,7 +424,7 @@ body[data-darkmode="true"] {
 .nuvio-btn {
   font-family: inherit;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
@@ -455,12 +465,12 @@ body[data-darkmode="true"] {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 16px;
-  background: #1f2023;
+  padding: 10px 18px;
+  background: #0d101e;
   color: #f1f3f4;
-  border: 1px solid #3c4043;
+  border: 1px solid rgba(182, 77, 245, 0.35);
   border-radius: 8px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 13px;
   animation: nuvio-toast-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -492,11 +502,11 @@ body[data-darkmode="true"] {
 }
 
 .nuvio-toast-action {
-  background: #8ab4f8;
-  color: #202124;
+  background: #a855f7;
+  color: #ffffff;
   border: none;
   border-radius: 4px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -505,7 +515,7 @@ body[data-darkmode="true"] {
 }
 
 .nuvio-toast-action:hover {
-  background: #aecbfa;
+  background: #c084fc;
 }
 
 .nuvio-toast-close {
