@@ -65,6 +65,8 @@ nuvio-google-search/
 │       └── storage.js              # chrome.storage synchronization layer
 ├── scripts/
 │   └── build.py                    # Build script generating dist/ and release zips
+├── tests/
+│   └── test_runner.py              # Automated test suite (manifest, syntax, DOM, zips)
 └── dist/                           # Generated builds (git ignored)
     ├── chromium/                   # Chrome, Brave, Edge, Opera unpacked dist
     ├── firefox/                    # Firefox Gecko MV3 unpacked dist
@@ -91,6 +93,11 @@ When a user clicks "Watch on Nuvio":
 - Observe `#rcnt` with a debounced `MutationObserver` (150ms) to support dynamic single-page searches.
 
 ## Build and Validation Commands
+
+To execute the automated test suite:
+```bash
+python tests/test_runner.py
+```
 
 To build and package the extension:
 ```bash

@@ -213,8 +213,10 @@ nuvio-google-search/
 │       ├── modal.js
 │       ├── protocol-launcher.js
 │       └── storage.js
-└── scripts/
-    └── build.py                    # Build and packaging automation
+├── scripts/
+│   └── build.py                    # Build and packaging automation
+└── tests/
+    └── test_runner.py              # Automated test suite (manifest, syntax, DOM, zips)
 ```
 
 ---
@@ -225,7 +227,7 @@ Contributions are welcome. Please ensure all contributions adhere to the project
 - Strictly no emojis in code, documentation, or commit messages.
 - Maintain zero external runtime dependencies.
 - Follow Conventional Commits format (`feat:`, `fix:`, `docs:`, `refactor:`, `style:`, `chore:`).
-- Run `python scripts/build.py` prior to submitting pull requests to verify all manifests and assets.
+- Run `python tests/test_runner.py` and `python scripts/build.py` prior to submitting pull requests to verify all tests and assets.
 
 ---
 

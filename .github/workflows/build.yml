@@ -1,4 +1,4 @@
-name: Build and Package Extension
+name: Build and Test Extension
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ main, master ]
 
 jobs:
-  build:
+  test-and-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,6 +18,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Python Test Dependencies
+        run: pip install pillow
+
+      - name: Run Automated Test Suite
+        run: python tests/test_runner.py
 
       - name: Validate and Build Distributions
         run: python scripts/build.py
